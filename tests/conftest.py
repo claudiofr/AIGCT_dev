@@ -33,14 +33,27 @@ def generate_random_floats(n, start, end):
 
 
 @pytest.fixture
-def sample_user_scores(variant_bm_container):
+def sample_user_scores1(variant_bm_container):
     user_scores_df = variant_bm_container._score_repo.get_all_by_task(
         "cancer")
     user_variants = user_scores_df[VARIANT_PK_COLUMNS].drop_duplicates()
-    random_idxs = random.sample(list(range(len(user_variants))), 670)
+    random_idxs = random.sample(list(range(len(user_variants))), 2000)
     user_variants = user_variants.iloc[random_idxs]
     random_scores = generate_random_floats(len(user_variants), 0.01, 0.99)
     user_variants['RANK_SCORE'] = random_scores
+    return user_variants
+
+
+@pytest.fixture
+def sample_user_scores(variant_bm_container):
+    user_scores_df = variant_bm_container._score_repo.get(
+        "cancer", "REVEL")
+    random_idxs = random.sample(list(range(len(user_scores_df))), 2000)
+    user_variants = user_scores_df.iloc[random_idxs]
+    user_variants['RANK_SCORE'] = user_variants['RANK_SCORE'].apply(
+        lambda scor: scor + (random.uniform(0.05, 0.15) *
+                             random.sample([1, -1], 1)[0])
+        if scor < 0.84 and scor > 0.16 else scor)
     return user_variants
 
 

@@ -6,10 +6,20 @@ import os
 import pandas as pd
 import numpy as np
 import re
-from typing import List
-from .file_util import create_folder
-from .date_util import now_str_compact
-from .repository import DATA_FOLDER, TASK_FOLDERS, TABLE_DEFS
+from ..file_util import create_folder
+from ..date_util import now_str_compact
+from ..pd_util import filter_dataframe_by_list
+from ..repository import (
+    DATA_FOLDER,
+    TASK_FOLDERS,
+    TABLE_DEFS,
+    RepoSessionContext
+)
+from ..util import Config
+
+# DATA_FOLDER = "data1"
+# TASK_FOLDERS = [os.path.join(DATA_FOLDER, task) for task in ["cancer", "adrd",
+#                                                              "chd", "ddd"]]
 
 
 COLUMN_NAME_MAP = {
@@ -159,9 +169,10 @@ VARIANT_DATA_SOURCE_DATA = [
 
 class RepositoryLoader:
 
-    def __init__(self):
-        self._log_folder = None
-        pass
+    def __init__(self, config: Config,
+                 repo_context: RepoSessionContext):
+        self._log_folder = config.log.dir
+        self._repo_context = repo_context
 
     def _convert_dot_to_nan(self, val):
         if val == '.':
@@ -172,7 +183,7 @@ class RepositoryLoader:
         source_name = re.match("(.+)_rankscore", row["rank_score"]).group(1)
         return [row["CODE"], source_name, "VEP", source_name]
 
-    def _task_full_path_name(task: str, file_name: str):
+    def _task_full_path_name(self, task: str, file_name: str):
         return os.path.join(DATA_FOLDER, task, file_name)
 
     def init_variant_task(self):
@@ -330,9 +341,34 @@ class RepositoryLoader:
         # based on matching values in pk_columns, it will update the
         # row in repo_df with the values from new_data_df.
         # The pk_columns must be the index of both data frames.
+
+        print('here')
+        print(repo_file_name)
+        print(pk_columns)
+        reg = repo_df[pk_columns].groupby(pk_columns).size()
+
+        neg = new_data_df.groupby(pk_columns).size()
+        print(len(reg[reg>1]))
+        print(len(neg[neg>1]))
+
+        new_data_df = new_data_df.drop_duplicates()
+        new_data_df_grouped = new_data_df.groupby(pk_columns).size()
+        new_data_dup_pks = new_data_df_grouped[new_data_df_grouped > 1]
+        if len(new_data_dup_pks) > 0:
+            new_data_df = filter_dataframe_by_list(
+                new_data_df, new_data_dup_pks.reset_index(),
+                pk_columns, in_list=False)
+
+        neg = new_data_df.groupby(pk_columns).size()
+        print(len(neg[neg>1]))
+
         repo_df.set_index(pk_columns, inplace=True)
         new_data_df = new_data_df.set_index(pk_columns)
         repo_df = repo_df.combine_first(new_data_df)
+
+        reg = repo_df.reset_index()[pk_columns].groupby(pk_columns).size()
+        print(len(reg[reg>1]))
+
         repo_df.to_csv(repo_file)
 
     def load_variant_file(self, genome_assembly: str, task: str,
@@ -409,7 +445,7 @@ class RepositoryLoader:
         variant_df["PRIOR_PRIOR_GENOME_ASSEMBLY"] = np.where(
             variant_df['PRIOR_PRIOR_CHROMOSOME'].isnull(),
             np.nan, prior_prior_genome_assembly)
-        self._upsert_repository_file(variant_df, task,
+        self._upsert_repository_file(variant_df, "",  # task,
                                      TABLE_DEFS["VARIANT"].columns,
                                      "variant.csv",
                                      TABLE_DEFS["VARIANT"].pk_columns)

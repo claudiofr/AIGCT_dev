@@ -28,7 +28,7 @@ def test_plot_results_file(
     metrics = variant_bm_analyzer.compute_metrics(
         "cancer", sample_user_scores, vep_min_overlap_percent=50,
         variant_vep_retention_percent=1, list_variants=True)
-    variant_bm_plotter.plot_results(metrics, ".")
+    variant_bm_plotter.plot_results(metrics, dir="./demo/output")
     pass
 
 

@@ -1,9 +1,11 @@
 ---
 
+log:
+  dir: ~/gitrepo/agct_dev/demo/log
+output_dir: ~/gitrepo/agct_dev/demo/output
 repository:
   root_dir: ~/gitrepo/agct_dev
 plot:
-  max_num_ves_curves_per_plot: 10
   line_width: 2
   line_style: solid
   user_ves_color: red
@@ -18,14 +20,25 @@ plot:
     - aqua
     - blue
     - violet
-  roc_title: ROC Curve
   file_dpi: 300
   bbox_inches: tight
-  x_axis_font_size: 25
-  y_axis_font_size: 25
-  label_size: 20
-  title_font_size: 30
-  legend_font_size: 20
-  legend_line_width: 3.0
-
+  roc_pr_line:
+    num_curves_per_plot: 10
+    roc_title: ROC Curve
+    pr_title: Precision/Recall
+    x_axis_font_size: 25
+    y_axis_font_size: 25
+    label_size: 20
+    title_font_size: 30
+    legend_font_size: 10
+    legend_line_width: 3.0
+  mwu_bar:
+    num_bars_per_plot: 10
+    title: Mann Whitney U
+    title_font_size: 20
+    y_label_font_size: 15
+    x_label_font_size: 15
+    label_size: 15
+    xtick_rotation: 60
+    xtick_rotation_mode: anchor
 

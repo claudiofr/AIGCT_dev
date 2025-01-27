@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from scipy import stats
 from sklearn.metrics import (
      roc_curve,
      roc_auc_score,
@@ -137,12 +138,13 @@ class VEAnalyzer:
                 scores_labels_df['BINARY_LABEL'],
                 scores_labels_df['RANK_SCORE'])
             aucs.append(auc(recs, prs))
-            precision_recall_score_sources.extend([score_source] * len(prs))
-            precisions.extend(prs)
-            recalls.extend(recs)
+            precision_recall_score_sources.extend([score_source] *
+                                                  len(thresholds))
+            precisions.extend(prs[:-1])
+            recalls.extend(recs[:-1])
             thresholds_list.extend(thresholds)
         pr_df = pd.DataFrame({"SCORE_SOURCE":
-                              grouped_ve_scores_labels.indices.keys(),
+                              grouped_ve_scores_labels.groups.keys(),
                               "PR_AUC": aucs})
         pr_curve_coords_df = pd.DataFrame(
             {"SCORE_SOURCE": precision_recall_score_sources,
@@ -185,7 +187,7 @@ class VEAnalyzer:
                 exceps.append(str(e))
 
         roc_df = pd.DataFrame({"SCORE_SOURCE": grouped_ve_scores_labels.
-                               indices.keys(),
+                               groups.keys(),
                                "ROC_AUC": aucs,
                                "EXCEPTION": exceps
                                })
@@ -219,6 +221,26 @@ class VEAnalyzer:
             return_dfs.append(df)
         return return_dfs
 
+    def _compute_mwu(
+            self, grouped_ve_scores_labels,
+    ) -> pd.DataFrame:
+
+        neg_log10_mwu_pvals = []
+        for score_source, scores_labels_df in grouped_ve_scores_labels:
+            positive_scores = np.array(scores_labels_df.query(
+                'BINARY_LABEL == 1')['RANK_SCORE'])
+            negative_scores = np.array(scores_labels_df.query(
+                'BINARY_LABEL == 0')['RANK_SCORE'])
+            neg_log10_mwu_pval = -np.log10(stats.mannwhitneyu(
+                negative_scores, positive_scores).pvalue)
+            neg_log10_mwu_pvals.append(neg_log10_mwu_pval)
+
+        mwu_df = pd.DataFrame({"SCORE_SOURCE": grouped_ve_scores_labels.
+                               groups.keys(),
+                               "NEG_LOG10_MWU_PVAL": neg_log10_mwu_pvals
+                               })
+        return mwu_df
+
     def _compute_metrics(
             self, task_name: str, ve_scores_labels_df: pd.DataFrame,
             metrics: list[str], list_variants: bool = False
@@ -236,10 +258,10 @@ class VEAnalyzer:
             roc_df, roc_curve_coords_df = self._compute_roc(
                 grouped_ve_scores_labels)
         if "pr" in metrics:
-            pr_df, pr_curve_coords_df = self._compute_pr
-            (grouped_ve_scores_labels)
+            pr_df, pr_curve_coords_df = self._compute_pr(
+                grouped_ve_scores_labels)
         if "mwu" in metrics:
-            pass
+            mwu_df = self._compute_mwu(grouped_ve_scores_labels)
         if list_variants:
             included_variants_df = ve_scores_labels_df[["SCORE_SOURCE"] +
                                                        VARIANT_PK_COLUMNS]
@@ -262,7 +284,7 @@ class VEAnalyzer:
             variant_query_criteria: VEQueryCriteria = None,
             vep_min_overlap_percent: float = 0,
             variant_vep_retention_percent: float = 0,
-            metrics: str | list[str] = "roc",
+            metrics: str | list[str] = ["roc", "pr", "mwu"],
             list_variants: bool = False) -> VEAnalysisResult:
 
         scores_and_labels_df = self.get_analysis_scores_and_labels(
@@ -285,7 +307,8 @@ class VEAnalyzer:
             scores_and_labels_df[VARIANT_PK_COLUMNS].drop_duplicates())
         num_user_variants = None if user_ve_scores is None else \
             len(user_ve_scores)
-        return VEAnalysisResult(num_variants,
+        return VEAnalysisResult(
+            num_variants,
             num_user_variants, general_metrics_df, roc_df,
             pr_df, mwu_df, roc_curve_coords_df,
             pr_curve_coords_df, included_variants_df)

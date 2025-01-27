@@ -27,6 +27,6 @@ def test_write_summary_file(
         variant_bm_reporter: VEAnalysisReporter):
     metrics = variant_bm_analyzer.compute_metrics(
         "cancer", sample_user_scores, list_variants=True)
-    variant_bm_reporter.write_summary(metrics, ".")
+    variant_bm_reporter.write_summary(metrics, "./demo/output")
     pass
 

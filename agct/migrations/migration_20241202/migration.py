@@ -1,6 +1,7 @@
 import context  # noqa: F401
 
-from agct.repo_loader import RepositoryLoader
+from agct.etl.repo_loader import RepositoryLoader
+from agct.etl.container import VEETLContainer
 
 LEGACY_DATA_FOLDERS = {
     "cancer": "TGCA.V1/datas/cancer",
@@ -42,10 +43,22 @@ def migrate_task_files(loader: RepositoryLoader, task: str):
                                  "hg19", "hg18")
 
 
-loader = RepositoryLoader()
-# loader.init_variant_task()
+container = VEETLContainer()
+loader = container.loader
+"""
+loader.init_variant_task()
 loader.init_variant_effect_source()
 migrate_task_files(loader, "cancer")
 migrate_task_files(loader, "adrd")
 migrate_task_files(loader, "chd")
 migrate_task_files(loader, "ddd")
+"""
+task = "cancer"
+loader.load_variant_file("hg38", task, "hotspot.csv",
+                         LEGACY_DATA_FOLDERS[task],
+                         "hotspot", 1,
+                         "hg19", "hg18")
+loader.load_variant_file("hg38", task, "MSK_passenger.csv",
+                         LEGACY_DATA_FOLDERS[task],
+                         "MSK_PASSENGER", 0,
+                         "hg19", "hg18")

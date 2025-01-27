@@ -29,6 +29,14 @@ class ParameterizedSingleton:
         return cls._instance
 
 
+class Config:
+    def __init__(self, config):
+        for key, value in config.items():
+            if isinstance(value, dict):
+                value = Config(value)
+            setattr(self, key, value)
+
+
 class FileUtil:
 
     @staticmethod

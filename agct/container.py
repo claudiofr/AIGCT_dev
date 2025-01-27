@@ -11,13 +11,15 @@ from .repository import (
     VariantFilterRepository,
     VariantRepository,
     VariantEffectSourceRepository,
-    VariantTaskRepository
+    VariantTaskRepository,
+    TABLE_DEFS
 )
 from .analyzer import VEAnalyzer
 from .query import VEBenchmarkQueryMgr
 from .reporter import VEAnalysisReporter
 from .plotter import VEAnalysisPlotter
 from .exporter import VEAnalysisExporter
+from .util import Config
 
 import yaml
 import os
@@ -28,9 +30,9 @@ class VEBenchmarkContainer:
     def __init__(self, app_root: str = "."):
         with (open(os.path.join(app_root, "config", "config.yaml"), "r") as
               config_file):
-            self.config = yaml.safe_load(config_file)
+            self.config = Config(yaml.safe_load(config_file))
         self._repo_session_context = RepoSessionContext(
-            self.config["repository"]["root_dir"])
+            self.config.repository.root_dir, TABLE_DEFS)
         self._variant_task_repo = VariantTaskRepository(
             self._repo_session_context)
         self._variant_repo = VariantRepository(self._repo_session_context)
@@ -57,7 +59,7 @@ class VEBenchmarkContainer:
                                               self._variant_effect_source_repo,
                                               self._score_repo)
         self._reporter = VEAnalysisReporter()
-        self._plotter = VEAnalysisPlotter(self.config["plot"])
+        self._plotter = VEAnalysisPlotter(self.config.plot)
         self._exporter = VEAnalysisExporter()
 
     @property

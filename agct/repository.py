@@ -38,6 +38,7 @@ class TableDef:
     def __post_init__(self):
         self.columns = self.pk_columns + self.non_pk_columns
         self.full_file_name = os.path.join(self.folder, self.file_name)
+    
 
 
 VARIANT_PK_COLUMNS = [
@@ -134,12 +135,27 @@ TABLE_DEFS = {
 
 class RepoSessionContext:
 
-    def __init__(self, data_folder_root: str = "."):
+    def __init__(self, data_folder_root: str,
+                 table_defs: dict[str, TableDef]):
         self._data_folder_root = data_folder_root
+        self._table_defs = table_defs
 
     @property
     def data_folder_root(self):
         return self._data_folder_root
+
+    def table_def(self, table_name: str):
+        return self._table_defs[table_name]
+
+    def table_file(self, table_name: str, task: str = None):
+        if task:
+            return os.path.join(self._data_folder_root,
+                                DATA_FOLDER, task,
+                                self._table_defs[table_name].file_name)
+        else:
+            return os.path.join(self._data_folder_root,
+                                DATA_FOLDER,
+                                self._table_defs[table_name].file_name)
 
 
 class VariantEffectLabelCache(ParameterizedSingleton):

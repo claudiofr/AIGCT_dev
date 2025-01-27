@@ -20,7 +20,7 @@ VARIANT_EFFECT_SCORE_COLS = ["SCORE_SOURCE"] +\
 class VEAnalysisReporter:
 
     def _write_metric_dataframe(self, out, metric_df: pd.DataFrame):
-        out.write(metric_df.to_string())
+        out.write(metric_df.to_string(index=False))
         new_line(out)
 
     def _write_summary(self, out, metrics: VEAnalysisResult):
@@ -42,14 +42,21 @@ class VEAnalysisReporter:
             self._write_metric_dataframe(
                 out, metrics.roc_metrics.sort_values(by='ROC_AUC',
                                                      ascending=False))
+            new_line(out, 2)
         if metrics.pr_metrics is not None:
             out.write("Precision/Recall Metrics")
             new_line(out, 2)
             self._write_metric_dataframe(
                 out, metrics.pr_metrics.sort_values(by="PR_AUC",
                                                     ascending=False))
+            new_line(out, 2)
         if metrics.mwu_metrics is not None:
-            pass
+            out.write("Mann-Whitney U -log10(P value)")
+            new_line(out, 2)
+            self._write_metric_dataframe(
+                out, metrics.mwu_metrics.sort_values(by="NEG_LOG10_MWU_PVAL",
+                                                     ascending=False))
+            new_line(out, 2)
 
     def write_summary(self, metrics: VEAnalysisResult,
                       dir: str = None):
