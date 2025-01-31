@@ -1,6 +1,8 @@
 import pandas as pd
 from .util import str_or_list_to_list
 
+RELATIONAL_OPERATORS = ["==", "!=", ">", "<", ">=", "<="]
+
 
 def filter_dataframe_by_list(data_frame: pd.DataFrame,
                              filter_list: pd.DataFrame | list[str] | str |
@@ -44,13 +46,18 @@ def build_dataframe_where_clause(where_params: dict) -> str:
     for column, operator_value in where_params.items():
         if operator_value[1] is None:
             continue
+        operator = operator_value[0]
+        if operator not in RELATIONAL_OPERATORS:
+            raise Exception(
+                f"{operator} is not a legal query relational operator. " +
+                f"It must be one of {RELATIONAL_OPERATORS}")
         if clause != "":
             clause += " "
-        clause = f"{clause}{column} {operator_value[0]} "
+        clause = f"{clause}{column} {operator} "
         if type(operator_value[1]) is str:
             val = "\"" + operator_value[1] + "\""
         else:
-            val = operator_value[1]
+            val = str(operator_value[1])
         clause += val
     return clause
 

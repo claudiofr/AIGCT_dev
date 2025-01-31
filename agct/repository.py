@@ -14,7 +14,7 @@ from .pd_util import (
     filter_dataframe_by_list,
     build_dataframe_where_clause
 )
-from .model import VariantFilterDf, VEQueryCriteria
+from .model import VariantFilter, VEQueryCriteria
 
 
 TASK_SUBFOLDER = {
@@ -374,7 +374,7 @@ class VariantFilterCache(ParameterizedSingleton):
         self._lock = threading.Lock()
         self._cache = dict()
 
-    def get_data_frame(self, task_name: str) -> Dict:
+    def get_data_frames(self, task_name: str) -> Dict:
         if task_name not in self._cache:
             with self._lock:
                 if task_name not in self._cache:
@@ -451,9 +451,10 @@ class VariantFilterRepository:
         self._cache = VariantFilterCache(session_context.data_folder_root)
 
     def get_by_task(self, task_name: str) -> Dict:
-        return self._cache.get_data_frame(task_name)
+        return self._cache.get_data_frames(task_name)
 
-    def get_by_task_filter_name(self, task_name: str, filter_name: str):
+    def get_by_task_filter_name(
+            self, task_name: str, filter_name: str) -> VariantFilter:
         filter_dfs = self.get_by_task(task_name)
         filter = filter_dfs["filter_df"].query(f"NAME == '{filter_name}'")
         if len(filter) == 0:
@@ -466,10 +467,10 @@ class VariantFilterRepository:
             f"FILTER_CODE == '{filter_code}'")
         if len(filter_genes) == 0 and len(filter_variants) == 0:
             return None
-        return VariantFilterDf(filter, filter_genes, filter_variants)
+        return VariantFilter(filter, filter_genes, filter_variants)
 
 
-def query_by_filter(query_df: pd.DataFrame, filter_name: str,
+def query_by_filter(query_df: pd.DataFrame,
                     filter: pd.Series,
                     filter_gene_df: pd.DataFrame,
                     filter_variant_df: pd.DataFrame) -> pd.DataFrame:
@@ -500,7 +501,7 @@ class VariantRepository:
     def get_all(self) -> pd.DataFrame:
         return self._cache.data_frame.copy(deep=True)
 
-    def get(self, qry: VEQueryCriteria = None) -> pd.DataFrame:
+    def get(self, qry: VEQueryCriteria) -> pd.DataFrame:
         """
         Fetches variants. The optional parameters are filter criteria used to
         limit the set of variants returned.
@@ -520,8 +521,8 @@ class VariantRepository:
             to the variant_ids provided or to fetch all variants but those
             in variant_ids
         allele_frequency_operator : str, optional
-            If allele_frequency is provided, this is one of "eq", "gt",
-            "lt", "ge", "le". i.e. limit variants to those whose
+            If allele_frequency is provided, this is one of "=", ">",
+            "<", ">=", "<=", "!=". i.e. limit variants to those whose
             allele_frequency is equal to, greater than, etc. the
             allele_frequency.
         allele_frequency : float, optional
@@ -624,7 +625,7 @@ class VariantEffectLabelRepository:
             if filter_dfs is None:
                 raise Exception("Invalid filter name: " + qry.filter_name)
             merge_df = query_by_filter(merge_df, filter_dfs.filter,
-                                       filter_dfs.filter_gene,
+                                       filter_dfs.filter_genes,
                                        filter_dfs.filter_variants)
         return merge_df
 
@@ -713,7 +714,7 @@ class VariantEffectScoreRepository:
             if filter_dfs is None:
                 raise Exception("Invalid filter name: " + qry.filter_name)
             merge_df = query_by_filter(merge_df, filter_dfs.filter,
-                                       filter_dfs.filter_gene,
+                                       filter_dfs.filter_genes,
                                        filter_dfs.filter_variants)
         return merge_df[VARIANT_EFFECT_SCORE_TABLE_DEF.columns]
 

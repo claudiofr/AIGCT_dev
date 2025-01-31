@@ -60,6 +60,19 @@ class VEAnalysisReporter:
 
     def write_summary(self, metrics: VEAnalysisResult,
                       dir: str = None):
+        """
+        Generate a report summarizing the results of an analysis. It will
+        be written either to the screen or to a file.
+
+        Parameters
+        ----------
+        results : VEAnalysisResult
+        dir : str, optional
+            Directory to place the report file. The file name will
+            begin with variant_bm_summary and suffixed
+            by a unique timestamp. If not specified will print to the
+            screen.
+        """
         if dir is not None:
             outfile = os.path.join(dir, now_str_compact("variant_bm_summary")
                                    + ".txt")

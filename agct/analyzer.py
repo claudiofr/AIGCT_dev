@@ -226,18 +226,29 @@ class VEAnalyzer:
     ) -> pd.DataFrame:
 
         neg_log10_mwu_pvals = []
+        exceps = []
         for score_source, scores_labels_df in grouped_ve_scores_labels:
-            positive_scores = np.array(scores_labels_df.query(
-                'BINARY_LABEL == 1')['RANK_SCORE'])
-            negative_scores = np.array(scores_labels_df.query(
-                'BINARY_LABEL == 0')['RANK_SCORE'])
-            neg_log10_mwu_pval = -np.log10(stats.mannwhitneyu(
-                negative_scores, positive_scores).pvalue)
-            neg_log10_mwu_pvals.append(neg_log10_mwu_pval)
+            try:
+                positive_scores = np.array(scores_labels_df.query(
+                    'BINARY_LABEL == 1')['RANK_SCORE'])
+                negative_scores = np.array(scores_labels_df.query(
+                    'BINARY_LABEL == 0')['RANK_SCORE'])
+                if 0 in [len(positive_scores), len(negative_scores)]:
+                    raise Exception(
+                        "Cannot compute mann-whitney u values " +
+                        "because all labels have same value")
+                neg_log10_mwu_pval = -np.log10(stats.mannwhitneyu(
+                    negative_scores, positive_scores).pvalue)
+                neg_log10_mwu_pvals.append(neg_log10_mwu_pval)
+                exceps.append(np.nan)
+            except Exception as e:
+                neg_log10_mwu_pvals.append(np.nan)
+                exceps.append(str(e))
 
         mwu_df = pd.DataFrame({"SCORE_SOURCE": grouped_ve_scores_labels.
                                groups.keys(),
-                               "NEG_LOG10_MWU_PVAL": neg_log10_mwu_pvals
+                               "NEG_LOG10_MWU_PVAL": neg_log10_mwu_pvals,
+                               "EXCEPTION": exceps
                                })
         return mwu_df
 
@@ -286,6 +297,67 @@ class VEAnalyzer:
             variant_vep_retention_percent: float = 0,
             metrics: str | list[str] = ["roc", "pr", "mwu"],
             list_variants: bool = False) -> VEAnalysisResult:
+        """
+        Generates performance metrics for an optional user supplied set of
+        vep scores and for system supplied vep's. If the user doesn't provide
+        vep scores, will only generate metrics for system veps. Returns
+        an object containing all the metrics which can then be used to
+        generate plots, reports, or csv data files.
+
+        Parameters
+        ----------
+        task_name : str
+        user_ve_scores : DataFrame, optional
+            An optional dataframe of user variant effect prediction
+            scores. Expected to have the following columns:
+            GENOME_ASSEMBLY, CHROMOSOME, POSITION,
+            REFERENCE_NUCLEOTIDE, ALTERNATE_NUCLEOTIDE, RANK_SCORE
+        column_name_map : dict, optional
+            If the column names in user_ve_scores are not the expected
+            names, then this maps the column names to the expected names.
+        variant_effect_sources : list, optional
+            If specified it would restrict the analysis to the
+            system supplied vep's in this list.
+        include_variant_effect_sources : bool, optional
+            If variant_effect_source is specified, indicates whether to
+            limit the analysis to the system supplied vep's specified or to
+            exclude the system supplied vep's specified.
+        variant_query_criteria : VEQueryCriteria, optional
+            See description of VEQueryCriteria in model package.
+            Specifies criteria that would limit the set of variants
+            to be included in the analysis.
+        vep_min_overlap_percent : float
+            In order for a system supplied vep to be included in the
+            analysis the set of variants for which it has scores must
+            overlap the variants in user_ve_scores by at least this
+            percentage amount. If the user_ve_scores is not specified,
+            then it must overlap the entire universe of variants in
+            the system for which we have labels by at least this
+            percentage amount. A value of 0 means that it can overlap
+            by any amount to be included.
+        variant_vep_retention_percent : float
+            In order for a variant to be included in the analysis
+            there must exist scores for the variant in at least
+            this percent of the system vep's included in the analysis
+            based on the value of vep_min_overlap_percent. For example,
+            if a value of 50 is specified and 10 system vep's qualified
+            for inclusion, then a variant must be in at least 5 veps
+            to be included in the analysis.
+        metrics : str or list[str]
+            Specifies which metrics to compute. Can be a string
+            indicating a single metric or a list of strings for
+            multiple metrics. The metrics are: roc, pr, mwu.
+        list_variants: bool
+            Include the list of variants
+            that were included in the analysis in the return result
+            object. There is a separate list for the user variants
+            as well as for each system vep.
+
+        Returns
+        -------
+        VEAnalysisResult
+            Object containing computed metrics
+        """
 
         scores_and_labels_df = self.get_analysis_scores_and_labels(
             task_name,

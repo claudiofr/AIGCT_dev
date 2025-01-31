@@ -11,6 +11,18 @@ class VEAnalysisExporter:
 
     def export_results(self, results: VEAnalysisResult,
                        dir: str):
+        """
+        Export the results of an analysis to data files.
+
+        Parameters
+        ----------
+        results : VEAnalysisResult
+        dir : str
+            Directory to place the data files. The files will
+            be placed in a subdirectory off of this directory
+            whose name begins with ve_analysis_data and suffixed
+            by a unique timestamp.
+        """
         dir = unique_file_name(dir, "ve_analysis_data_")
         create_folder(dir)
         results.general_metrics.to_csv(
@@ -28,4 +40,7 @@ class VEAnalysisExporter:
         if results.mwu_metrics is not None:
             results.mwu_metrics.to_csv(
                 os.path.join(dir, "mwu_metrics.csv"), index=False)
+        if results.variants_included is not None:
+            results.variants_included.to_csv(
+                os.path.join(dir, "included_variants.csv"), index=False)
 

@@ -135,3 +135,21 @@ dic = [{"a":1,"b":2},{"a":5,"b":6}]
 
 df3= pd.DataFrame([{"a":1,"b":2},{"a":5,"b":6}],columns=["A","B"])
 pass
+
+from agct.repository import (
+    VARIANT_PK_COLUMNS
+)
+v1 = pd.read_csv("data/variant.csv")
+v1s = v1.copy()
+vd = pd.read_csv("temp/variant.csv")
+vd2 = vd.query("not ALLELE_FREQUENCY.isna()")
+
+v1 = v1.set_index(VARIANT_PK_COLUMNS)
+vd2 = vd2.set_index(VARIANT_PK_COLUMNS)[
+    ["ALLELE_FREQUENCY_SOURCE", "ALLELE_FREQUENCY"]]
+v1.update(vd2)
+
+v1 = v1.reset_index()
+
+v1.to_csv("data/variant.csv",index=False)
+

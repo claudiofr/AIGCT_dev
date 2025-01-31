@@ -32,6 +32,8 @@ class VEAnalysisPlotter:
                                    num_batches > 1 else "")
         plt.figure(figsize=(10, 8))
         for i, ve_auc in aucs.iterrows():
+            if pd.isna(ve_auc['ROC_AUC']):
+                continue
             ve_curve_coords = curve_coords[curve_coords['SCORE_SOURCE'] ==
                                            ve_auc['SCORE_SOURCE']].sort_values(
                 'THRESHOLD', ascending=False)
@@ -112,12 +114,12 @@ class VEAnalysisPlotter:
             results.mwu_metrics, how="inner", suffixes=(None, "_y"),
             on='SCORE_SOURCE')[[
                 'SOURCE_NAME', 'NUM_VARIANTS', 'NUM_POSITIVE_LABELS',
-                'NUM_NEGATIVE_LABELS', 'NEG_LOG10_MWU_PVAL']]
+                'NUM_NEGATIVE_LABELS', 'NEG_LOG10_MWU_PVAL', 'EXCEPTION']]
         table_output = table_output.sort_values('NEG_LOG10_MWU_PVAL',
                                                 ascending=False)
         style = table_output.style.hide().relabel_index(
              ['VEP', "Variant Total", "Positive Labels", "Negative Labels",
-              "MWU -log10(pval)"],
+              "MWU -log10(pval)", "Exception"],
              axis=1).set_caption("Mann-Whitney U -log10(p value)")
         if file_name:
             style.to_html(file_name)
@@ -222,8 +224,9 @@ class VEAnalysisPlotter:
                          dir: str = None):
         num_bars_per_plot = self._mwu_config.num_bars_per_plot
         batches = []
-        metrics = results.mwu_metrics.sort_values('NEG_LOG10_MWU_PVAL',
-                                                  ascending=False)
+        metrics = results.mwu_metrics.query('EXCEPTION.isna()')
+        metrics = metrics.sort_values('NEG_LOG10_MWU_PVAL',
+                                      ascending=False)
         for idx in range(0, len(metrics), num_bars_per_plot):
             batch = metrics.iloc[idx:idx+num_bars_per_plot]
             batches.append(batch)
@@ -241,6 +244,24 @@ class VEAnalysisPlotter:
     def plot_results(self, results: VEAnalysisResult,
                      metrics: str | list[str] = ["roc", "pr", "mwu"],
                      dir: str = None):
+        """
+        Plot the results of an analysis either to the screen or to
+        files.
+
+        Parameters
+        ----------
+        results : VEAnalysisResult
+        metrics : str or list[str]
+            Specifies which metrics to plot. Can be a string
+            indicating a single metric or a list of strings for
+            multiple metrics. The metrics are: roc, pr, mwu.
+        dir : str, optional
+            Directory to place the plot files. The files will
+            be placed in a subdirectory off of this directory
+            whose name begins with ve_analysis_plots_ and suffixed
+            by a unique timestamp. If not specified will plot
+            to screen.
+        """
         if type(metrics) is str:
             metrics = [metrics]
         if dir is not None:
