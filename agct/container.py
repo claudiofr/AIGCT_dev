@@ -1,9 +1,3 @@
-"""
-Class to simulate a proper Dependency Injection container.
-It could be reimplemented in the future if we decide to use
-a proper one. The interface, however, would remain the same.
-"""
-
 from .repository import (
     VariantEffectScoreRepository,
     VariantEffectLabelRepository,
@@ -20,14 +14,28 @@ from .reporter import VEAnalysisReporter
 from .plotter import VEAnalysisPlotter
 from .exporter import VEAnalysisExporter
 from .util import Config
+from .repo_qc import VEDataValidator
 
 import yaml
 import os
 
 
 class VEBenchmarkContainer:
+    """
+    Class to simulate a Dependency Injection container.
+    It could be reimplemented in the future if we decide to use
+    a proper one. The interface, however, would remain the same.
+    """
 
     def __init__(self, app_root: str = "."):
+        """
+        Parameters
+        ----------
+        app_root : str
+            Directory where app config file is location.
+            Path of config file:
+            <value of app_root>/config/config.yaml
+        """
         with (open(os.path.join(app_root, "config", "config.yaml"), "r") as
               config_file):
             self.config = Config(yaml.safe_load(config_file))
@@ -65,6 +73,13 @@ class VEBenchmarkContainer:
         self._reporter = VEAnalysisReporter()
         self._plotter = VEAnalysisPlotter(self.config.plot)
         self._exporter = VEAnalysisExporter()
+        self._data_validator = VEDataValidator(
+            self._label_repo,
+            self._variant_repo,
+            self._variant_task_repo,
+            self._variant_effect_source_repo,
+            self._score_repo,
+            self._variant_filter_repo)
 
     @property
     def analyzer(self):
@@ -85,3 +100,7 @@ class VEBenchmarkContainer:
     @property
     def exporter(self):
         return self._exporter
+
+    @property
+    def data_validator(self):
+        return self._data_validator

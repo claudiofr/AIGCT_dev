@@ -1,4 +1,3 @@
-
 import pytest
 import random
 import context  # noqa: F401
@@ -9,23 +8,23 @@ from agct.repository import (
 
 
 @pytest.fixture
-def variant_bm_container():
+def ve_bm_container():
     return VEBenchmarkContainer()
 
 
 @pytest.fixture
-def variant_bm_analyzer(variant_bm_container):
-    return variant_bm_container.analyzer
+def ve_analyzer(ve_bm_container):
+    return ve_bm_container.analyzer
 
 
 @pytest.fixture
-def variant_bm_reporter(variant_bm_container):
-    return variant_bm_container.reporter
+def ve_reporter(ve_bm_container):
+    return ve_bm_container.reporter
 
 
 @pytest.fixture
-def variant_bm_plotter(variant_bm_container):
-    return variant_bm_container.plotter
+def ve_plotter(ve_bm_container):
+    return ve_bm_container.plotter
 
 
 def generate_random_floats(n, start, end):
@@ -33,9 +32,9 @@ def generate_random_floats(n, start, end):
 
 
 @pytest.fixture
-def sample_user_scores1(variant_bm_container):
-    user_scores_df = variant_bm_container._score_repo.get_all_by_task(
-        "cancer")
+def sample_user_scores1(ve_bm_container):
+    user_scores_df = ve_bm_container._score_repo.get_all_by_task(
+        "CANCER")
     user_variants = user_scores_df[VARIANT_PK_COLUMNS].drop_duplicates()
     random_idxs = random.sample(list(range(len(user_variants))), 2000)
     user_variants = user_variants.iloc[random_idxs]
@@ -45,9 +44,9 @@ def sample_user_scores1(variant_bm_container):
 
 
 @pytest.fixture
-def sample_user_scores(variant_bm_container):
-    user_scores_df = variant_bm_container._score_repo.get(
-        "cancer", "REVEL")
+def sample_user_scores(ve_bm_container):
+    user_scores_df = ve_bm_container._score_repo.get(
+        "CANCER", "REVEL")
     random_idxs = random.sample(list(range(len(user_scores_df))), 2000)
     user_variants = user_scores_df.iloc[random_idxs]
     user_variants['RANK_SCORE'] = user_variants['RANK_SCORE'].apply(
@@ -58,8 +57,8 @@ def sample_user_scores(variant_bm_container):
 
 
 @pytest.fixture
-def sample_user_scores_col_name_map(variant_bm_container, sample_user_scores):
-    user_scores_df = variant_bm_container._score_repo.get("cancer",
+def sample_user_scores_col_name_map(ve_bm_container, sample_user_scores):
+    user_scores_df = ve_bm_container._score_repo.get("CANCER",
                                                           "REVEL")
     user_scores_df["RANK_SCORE"] = user_scores_df["RANK_SCORE"].apply(
         lambda sc: sc + 0.1 if sc < 0.9 else 0.95)
@@ -74,11 +73,16 @@ def sample_user_scores_col_name_map(variant_bm_container, sample_user_scores):
 
 
 @pytest.fixture
-def variant_query_mgr(variant_bm_container):
-    return variant_bm_container.query_mgr
+def ve_bm_query_mgr(ve_bm_container):
+    return ve_bm_container.query_mgr
 
 
 @pytest.fixture
-def ve_analysis_exporter(variant_bm_container):
-    return variant_bm_container.exporter
+def ve_analysis_exporter(ve_bm_container):
+    return ve_bm_container.exporter
+
+
+@pytest.fixture
+def ve_data_validator(ve_bm_container):
+    return ve_bm_container.data_validator
  

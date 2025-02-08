@@ -18,6 +18,7 @@ from .plot_util import barchart
 
 
 class VEAnalysisPlotter:
+    """Plot results of an analysis"""
 
     def __init__(self, config: Config):
         self._config = config
@@ -251,6 +252,7 @@ class VEAnalysisPlotter:
         Parameters
         ----------
         results : VEAnalysisResult
+            Analysis result object
         metrics : str or list[str]
             Specifies which metrics to plot. Can be a string
             indicating a single metric or a list of strings for
@@ -258,7 +260,7 @@ class VEAnalysisPlotter:
         dir : str, optional
             Directory to place the plot files. The files will
             be placed in a subdirectory off of this directory
-            whose name begins with ve_analysis_plots_ and suffixed
+            whose name begins with ve_analysis_plots and suffixed
             by a unique timestamp. If not specified will plot
             to screen.
         """
@@ -274,29 +276,3 @@ class VEAnalysisPlotter:
         if "mwu" in metrics and results.mwu_metrics is not None:
             self.plot_mwu_results(results, dir)
 
-    def plot_roc_results1(self, results: VEAnalysisResult,
-                          dir: str = None):
-        """
-        num_curves_per_plot = self._roc_pr_config.num_curves_per_plot
-        roc_metric_batches = []
-        if results.num_user_variants is not None:
-            num_curves_per_plot -= 1
-            roc_metrics_no_user = results.roc_metrics.query(
-                "SCORE_SOURCE != 'USER'")
-            roc_metrics_user = results.roc_metrics.query(
-                "SCORE_SOURCE == 'USER'")
-            roc_metrics_no_user = roc_metrics_no_user.sort_values('ROC_AUC',
-                                                                  ascending=False)
-            for idx in range(0,len(roc_metrics_no_user),num_curves_per_plot):
-                batch = roc_metrics_no_user.iloc[idx:idx+num_curves_per_plot]
-                batch = pd.concat([batch, roc_metrics_user]).sort_values(
-                    'ROC_AUC', ascending=False)
-                roc_metric_batches.append(batch)
-        else:
-            roc_metrics_no_user = results.roc_metrics.sort_values('ROC_AUC',
-                                                                  ascending=False)
-            for idx in range(0,len(roc_metrics_no_user),num_curves_per_plot):
-                batch = roc_metrics_no_user.iloc[idx:idx+num_curves_per_plot]
-                roc_metric_batches.append(batch)
-        """
-        pass

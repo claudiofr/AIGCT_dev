@@ -34,7 +34,7 @@ class VEAnalyzer:
 
     def get_analysis_scores_and_labels(
             self,
-            task_name: str,
+            task_code: str,
             user_ve_scores: pd.DataFrame = None,
             column_name_map: dict = None,
             variant_effect_sources: list[str] = None,
@@ -54,7 +54,7 @@ class VEAnalyzer:
         # Get the full universe of variants for query criteria. The universe
         # is limited to those for which we have labels.
         variant_universe_pks_df = self._variant_effect_label_repo.get(
-                task_name, variant_query_criteria)[VARIANT_PK_COLUMNS]
+                task_code, variant_query_criteria)[VARIANT_PK_COLUMNS]
 
         # if user has specified variant scores then restrict user
         # variants to those in the universe(i.e. those for which we have
@@ -71,7 +71,7 @@ class VEAnalyzer:
 
         # get the system vep scores based upon selection critera
         system_ve_scores_df = self._variant_effect_score_repo.get(
-            task_name, variant_effect_sources,
+            task_code, variant_effect_sources,
             include_variant_effect_sources,
             variant_query_criteria)
         
@@ -119,7 +119,7 @@ class VEAnalyzer:
                                                          retained_variants,
                                                          VARIANT_PK_COLUMNS)
         analysis_labels_df = self._variant_effect_label_repo.get(
-            task_name, VEQueryCriteria(variant_ids=retained_variants))
+            task_code, VEQueryCriteria(variant_ids=retained_variants))
         analysis_ve_scores_labels_df = analysis_ve_scores_df.merge(
             analysis_labels_df, how="inner", on=VARIANT_PK_COLUMNS)
         return analysis_ve_scores_labels_df
@@ -253,7 +253,7 @@ class VEAnalyzer:
         return mwu_df
 
     def _compute_metrics(
-            self, task_name: str, ve_scores_labels_df: pd.DataFrame,
+            self, task_code: str, ve_scores_labels_df: pd.DataFrame,
             metrics: list[str], list_variants: bool = False
     ):
 
@@ -287,7 +287,7 @@ class VEAnalyzer:
 
     def compute_metrics(
             self,
-            task_name: str,
+            task_code: str,
             user_ve_scores: pd.DataFrame = None,
             column_name_map: dict = None,
             variant_effect_sources: list[str] = None,
@@ -306,7 +306,8 @@ class VEAnalyzer:
 
         Parameters
         ----------
-        task_name : str
+        task_code : str
+            Task code
         user_ve_scores : DataFrame, optional
             An optional dataframe of user variant effect prediction
             scores. Expected to have the following columns:
@@ -360,7 +361,7 @@ class VEAnalyzer:
         """
 
         scores_and_labels_df = self.get_analysis_scores_and_labels(
-            task_name,
+            task_code,
             user_ve_scores,
             column_name_map,
             variant_effect_sources,
@@ -373,7 +374,7 @@ class VEAnalyzer:
             metrics = [metrics]
         general_metrics_df, roc_df, pr_df, mwu_df, roc_curve_coords_df, \
             pr_curve_coords_df, included_variants_df = \
-            self._compute_metrics(task_name, scores_and_labels_df,
+            self._compute_metrics(task_code, scores_and_labels_df,
                                   metrics, list_variants)
         num_variants = len(
             scores_and_labels_df[VARIANT_PK_COLUMNS].drop_duplicates())

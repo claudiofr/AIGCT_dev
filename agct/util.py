@@ -3,8 +3,6 @@ Utility classes
 """
 
 import threading
-import os
-from datetime import datetime
 
 
 class ParameterizedSingleton:
@@ -35,14 +33,6 @@ class Config:
             if isinstance(value, dict):
                 value = Config(value)
             setattr(self, key, value)
-
-
-class FileUtil:
-
-    @staticmethod
-    def create_folder(folder):
-        if not os.path.exists(folder):
-            os.mkdir(folder)
 
 
 def str_or_list_to_list(str_or_list: str | list[str]) -> list[str]:

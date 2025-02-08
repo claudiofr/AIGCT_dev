@@ -18,8 +18,8 @@ from ..repository import (
 from ..util import Config
 
 # DATA_FOLDER = "data1"
-# TASK_FOLDERS = [os.path.join(DATA_FOLDER, task) for task in ["cancer", "adrd",
-#                                                              "chd", "ddd"]]
+# TASK_FOLDERS = [os.path.join(DATA_FOLDER, task) for task in ["CANCER", "ADRD",
+#                                                              "CHD", "DDD"]]
 
 
 COLUMN_NAME_MAP = {
@@ -402,6 +402,7 @@ class RepositoryLoader:
         genome_assembly : str
             Genome assembly, typically hg38
         task : str
+            task code
         data_file : str
             File containing data to be loaded.
         file_folder : str

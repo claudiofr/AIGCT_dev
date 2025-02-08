@@ -18,6 +18,7 @@ VARIANT_EFFECT_SCORE_COLS = ["SCORE_SOURCE"] +\
 
 
 class VEAnalysisReporter:
+    """Report analysis results"""
 
     def _write_metric_dataframe(self, out, metric_df: pd.DataFrame):
         out.write(metric_df.to_string(index=False))
@@ -67,6 +68,7 @@ class VEAnalysisReporter:
         Parameters
         ----------
         results : VEAnalysisResult
+            Object containing the results of an analysis.
         dir : str, optional
             Directory to place the report file. The file name will
             begin with variant_bm_summary and suffixed

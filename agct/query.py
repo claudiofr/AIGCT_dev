@@ -93,8 +93,8 @@ class VEBenchmarkQueryMgr:
         """
         return self._variant_repo.get(qry)
 
-    def get_variant_effect_sources(self, task_name: str) -> pd.DataFrame:
-        return self._variant_effect_source_repo.get_by_task(task_name)
+    def get_variant_effect_sources(self, task_code: str) -> pd.DataFrame:
+        return self._variant_effect_source_repo.get_by_task(task_code)
 
     @staticmethod
     def _compute_variant_counts(group) -> pd.Series:
@@ -105,8 +105,8 @@ class VEBenchmarkQueryMgr:
              })
 
     def get_variant_effect_source_stats(
-            self, task_name: str, variant_effect_sources=None,
-            include_variant_effect_sources: bool = None,
+            self, task_code: str, variant_effect_sources=None,
+            include_variant_effect_sources: bool = True,
             qry: VEQueryCriteria = None) -> pd.DataFrame:
         """
         Get all variant effect sources for a task along with the
@@ -115,7 +115,8 @@ class VEBenchmarkQueryMgr:
 
         Parameters
         ----------
-        task_name : str
+        task_code : str
+
         variant_effect_sources : list, optional
             If specified it would restrict the results based on
             system supplied vep's in this list.
@@ -134,9 +135,9 @@ class VEBenchmarkQueryMgr:
         """
 
         variant_labels = self._variant_effect_label_repo.get(
-            task_name, qry)
+            task_code, qry)
         scores = self._variant_effect_score_repo.get(
-            task_name, variant_effect_sources,
+            task_code, variant_effect_sources,
             include_variant_effect_sources, qry)
         scores_labels = scores.merge(variant_labels, how="inner",
                                      on=VARIANT_PK_COLUMNS)
@@ -145,7 +146,7 @@ class VEBenchmarkQueryMgr:
             self._compute_variant_counts,
             include_groups=False).reset_index()
 
-    def get_variant_effect_scores(self, task_name: str,
+    def get_variant_effect_scores(self, task_code: str,
                                   variant_effect_sources=None,
                                   include_variant_effect_sources: bool = None,
                                   qry: VEQueryCriteria = None) -> pd.DataFrame:
@@ -154,7 +155,8 @@ class VEBenchmarkQueryMgr:
 
         Parameters
         ----------
-        task_name : str
+        task_code : str
+            task code
         variant_effect_sources : list, optional
             If specified it would restrict the results based on
             system supplied vep's in this list.
@@ -173,12 +175,12 @@ class VEBenchmarkQueryMgr:
         """
 
         return self._variant_effect_score_repo.get(
-            task_name,
+            task_code,
             variant_effect_sources,
             include_variant_effect_sources,
             qry)
 
-    def get_variants_by_task(self, task_name: str,
+    def get_variants_by_task(self, task_code: str,
                              qry: VEQueryCriteria = None
                              ) -> pd.DataFrame:
         """
@@ -187,7 +189,8 @@ class VEBenchmarkQueryMgr:
 
         Parameters
         ----------
-        task_name : str
+        task_code : str
+
         qry : VEQueryCriteria, optional
             See description of VEQueryCriteria in model package.
             Specifies criteria that would limit the set of variants
@@ -198,10 +201,10 @@ class VEBenchmarkQueryMgr:
         DataFrame
         """
 
-        return self._variant_effect_label_repo.get(task_name,
+        return self._variant_effect_label_repo.get(task_code,
                                                    qry)
 
-    def get_variant_distribution(self, task_name: str,
+    def get_variant_distribution(self, task_code: str,
                                  by: str = "gene",
                                  qry: VEQueryCriteria = None
                                  ) -> pd.DataFrame:
@@ -212,7 +215,8 @@ class VEBenchmarkQueryMgr:
 
         Parameters
         ----------
-        task_name : str
+        task_code : str
+            Task code
         by : str
             Values are gene or chromosome. Specifies the type of distribution
             to return.
@@ -226,31 +230,25 @@ class VEBenchmarkQueryMgr:
         DataFrame
         """
 
-        label_df = self._variant_effect_label_repo.get(task_name, qry)[
-            ['CHROMOSOME', 'BINARY_LABEL']]
+        label_df = self._variant_effect_label_repo.get(task_code, qry)[
+            ['CHROMOSOME', 'GENE_SYMBOL', 'BINARY_LABEL']]
         label_df[['POSITIVE_LABEL', 'NEGATIVE_LABEL']] = label_df.apply(
-            lambda row: [row['BINARY_LABEL'], 1 ^ row['BINARY_LABEL']]
+            lambda row: [row['BINARY_LABEL'], 1 ^ row['BINARY_LABEL']],
+            result_type="expand", axis=1
         )
         if by == 'chromosome':
             grouped = label_df.groupby('CHROMOSOME')
-            return grouped.agg(
-                NUM_POSITIVE_VARIANTS=pd.NamedAgg(column='POSITIVE_LABEL',
-                                                  aggfunc='sum'),
-                NUM_NEGATIVE_VARIANTS=pd.NamedAgg(column='NEGATIVE_LABEL',
-                                                  aggfunc='sum')
-                            )['CHROMSOME', 'COUNT_POSITIVE', 'COUNT_NEGATIVE']
         else:
             grouped = label_df.groupby('GENE_SYMBOL')
-            return grouped.agg(
-                NUM_POSITIVE_VARIANTS=pd.NamedAgg(column='POSITIVE_LABEL',
-                                                  aggfunc='sum'),
-                NUM_NEGATIVE_VARIANTS=pd.NamedAgg(column='NEGATIVE_LABEL',
-                                                  aggfunc='sum')
-                            )['GENE_SYMBOL', 'COUNT_POSITIVE',
-                              'COUNT_NEGATIVE']
+        return grouped.agg(
+                NUM_POSITIVE_LABELS=pd.NamedAgg(column='POSITIVE_LABEL',
+                                                aggfunc='sum'),
+                NUM_NEGATIVE_LABELS=pd.NamedAgg(column='NEGATIVE_LABEL',
+                                                aggfunc='sum')
+                            ).reset_index()
 
     def get_variant_filter(
-            self, task_name: str, filter_name: str) -> VariantFilter:
+            self, task_code: str, filter_name: str) -> VariantFilter:
         """
         Return a variant filter for a task by name.
 
@@ -261,5 +259,24 @@ class VEBenchmarkQueryMgr:
             filter. See description of the object.
         """
         return self._variant_filter_repo.get_by_task_filter_name(
-            task_name, filter_name
+            task_code, filter_name
         )
+
+    def get_all_variant_filters(self, task_code: str) ->\
+            dict[str, pd.DataFrame]:
+        """
+        Return basic descriptive information about all variant filters
+        for a task.
+
+        Returns
+        -------
+        dict[str, pd.DataFrame]
+            A dictionary of 3 data frames with the following keys:
+            filter_df - Data frame of filters containing CODE, NAME,
+            DESCRIPTION, etc.
+            filter_gene_df - Data frame of genes associated with each
+            filter
+            filter_variant_df - Data frame of variants associated with
+            each filter
+        """
+        return self._variant_filter_repo.get_by_task(task_code)

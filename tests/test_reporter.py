@@ -11,22 +11,22 @@ from agct.repository import (
 
 
 def test_write_summary_stdout(
-        variant_bm_analyzer: VEAnalyzer,
+        ve_analyzer: VEAnalyzer,
         sample_user_scores,
-        variant_bm_reporter: VEAnalysisReporter):
-    metrics = variant_bm_analyzer.compute_metrics(
-        "cancer", sample_user_scores, vep_min_overlap_percent=50,
+        ve_reporter: VEAnalysisReporter):
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER", sample_user_scores, vep_min_overlap_percent=50,
         variant_vep_retention_percent=1, list_variants=True)
-    variant_bm_reporter.write_summary(metrics)
+    ve_reporter.write_summary(metrics)
     pass
 
 
 def test_write_summary_file(
-        variant_bm_analyzer,
+        ve_analyzer,
         sample_user_scores,
-        variant_bm_reporter: VEAnalysisReporter):
-    metrics = variant_bm_analyzer.compute_metrics(
-        "cancer", sample_user_scores, list_variants=True)
-    variant_bm_reporter.write_summary(metrics, "./demo/output")
+        ve_reporter: VEAnalysisReporter):
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER", sample_user_scores, list_variants=True)
+    ve_reporter.write_summary(metrics, "./demo/output")
     pass
 

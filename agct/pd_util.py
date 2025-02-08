@@ -18,7 +18,7 @@ def filter_dataframe_by_list(data_frame: pd.DataFrame,
         filter_merge_columns = [filter_col_name_map[merge_col] for
                                 merge_col in df_merge_columns]
     if type(filter_list) is pd.DataFrame:
-        filter_df = filter_list
+        filter_df = filter_list[filter_merge_columns].drop_duplicates()
     else:
         if len(df_merge_columns) > 1:
             raise Exception("Cannot filter a dataframe by more than " +
@@ -27,7 +27,7 @@ def filter_dataframe_by_list(data_frame: pd.DataFrame,
                             "dataframe.")
         if type(filter_list) is str:
             filter_list = [filter_list]
-        filter_df = pd.DataFrame({df_merge_columns[0]: filter_list})
+        filter_df = pd.DataFrame({df_merge_columns[0]: list(set(filter_list))})
     if in_list:
         return data_frame.merge(filter_df[filter_merge_columns],
                                 left_on=df_merge_columns,

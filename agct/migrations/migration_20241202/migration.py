@@ -4,10 +4,10 @@ from agct.etl.repo_loader import RepositoryLoader
 from agct.etl.container import VEETLContainer
 
 LEGACY_DATA_FOLDERS = {
-    "cancer": "TGCA.V1/datas/cancer",
-    "adrd": "TGCA.V1/data_new/AD",
-    "chd": "TGCA.V1/data_new/CHD",
-    "ddd": "TGCA.V1/data_new/DDD",
+    "CANCER": "TGCA.V1/datas/cancer",
+    "ADRD": "TGCA.V1/data_new/AD",
+    "CHD": "TGCA.V1/data_new/CHD",
+    "DDD": "TGCA.V1/data_new/DDD",
 }
 LEGACY_CANCER_VARIANT_FILES = [
     {"source": "HOTSPOT", "label": 1, "file": "hotspot.csv"},
@@ -28,10 +28,10 @@ LEGACY_DDD_VARIANT_FILES = [
 ]
 
 LEGACY_VARIANT_FILES = {
-    "cancer": LEGACY_CANCER_VARIANT_FILES,
-    "adrd": LEGACY_ADRD_VARIANT_FILES,
-    "chd": LEGACY_CHD_VARIANT_FILES,
-    "ddd": LEGACY_DDD_VARIANT_FILES
+    "CANCER": LEGACY_CANCER_VARIANT_FILES,
+    "ADRD": LEGACY_ADRD_VARIANT_FILES,
+    "CHD": LEGACY_CHD_VARIANT_FILES,
+    "DDD": LEGACY_DDD_VARIANT_FILES
 }
 
 
@@ -48,12 +48,12 @@ loader = container.loader
 """
 loader.init_variant_task()
 loader.init_variant_effect_source()
-migrate_task_files(loader, "cancer")
-migrate_task_files(loader, "adrd")
-migrate_task_files(loader, "chd")
-migrate_task_files(loader, "ddd")
+migrate_task_files(loader, "CANCER")
+migrate_task_files(loader, "ADRD")
+migrate_task_files(loader, "CHD")
+migrate_task_files(loader, "DDD")
 """
-task = "cancer"
+task = "CANCER"
 loader.load_variant_file("hg38", task, "hotspot.csv",
                          LEGACY_DATA_FOLDERS[task],
                          "hotspot", 1,

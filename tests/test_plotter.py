@@ -11,24 +11,24 @@ from agct.repository import (
 
 
 def test_plot_results(
-        variant_bm_analyzer: VEAnalyzer,
+        ve_analyzer: VEAnalyzer,
         sample_user_scores,
-        variant_bm_plotter: VEAnalysisPlotter):
-    metrics = variant_bm_analyzer.compute_metrics(
-        "cancer", sample_user_scores, vep_min_overlap_percent=50,
+        ve_plotter: VEAnalysisPlotter):
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER", sample_user_scores, vep_min_overlap_percent=50,
         variant_vep_retention_percent=1, list_variants=True)
-    variant_bm_plotter.plot_results(metrics)
+    ve_plotter.plot_results(metrics)
     pass
 
 
 def test_plot_results_file(
-        variant_bm_analyzer: VEAnalyzer,
+        ve_analyzer: VEAnalyzer,
         sample_user_scores,
-        variant_bm_plotter: VEAnalysisPlotter):
-    metrics = variant_bm_analyzer.compute_metrics(
-        "cancer", sample_user_scores, vep_min_overlap_percent=50,
+        ve_plotter: VEAnalysisPlotter):
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER", sample_user_scores, vep_min_overlap_percent=50,
         variant_vep_retention_percent=1, list_variants=True)
-    variant_bm_plotter.plot_results(metrics, dir="./demo/output")
+    ve_plotter.plot_results(metrics, dir="./demo/output")
     pass
 
 

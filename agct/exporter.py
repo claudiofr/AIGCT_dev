@@ -8,6 +8,7 @@ from .file_util import (
 
 
 class VEAnalysisExporter:
+    """Export results of an analysis to data files"""
 
     def export_results(self, results: VEAnalysisResult,
                        dir: str):
@@ -17,6 +18,7 @@ class VEAnalysisExporter:
         Parameters
         ----------
         results : VEAnalysisResult
+            Analysis result object with all relevant metrics
         dir : str
             Directory to place the data files. The files will
             be placed in a subdirectory off of this directory

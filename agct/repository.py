@@ -6,7 +6,6 @@ details of the repository structure.
 
 import os
 import pandas as pd
-from typing import List, Dict
 from .util import ParameterizedSingleton
 import threading
 from dataclasses import dataclass, field
@@ -18,12 +17,12 @@ from .model import VariantFilter, VEQueryCriteria
 
 
 TASK_SUBFOLDER = {
-    "cancer": "cancer"
+    "CANCER": "CANCER"
 }
 
 DATA_FOLDER = "data"
-TASK_FOLDERS = [os.path.join(DATA_FOLDER, task) for task in ["cancer", "adrd",
-                                                             "chd", "ddd"]]
+TASK_FOLDERS = [os.path.join(DATA_FOLDER, task) for task in ["CANCER", "ADRD",
+                                                             "CHD", "DDD"]]
 
 
 @dataclass
@@ -112,7 +111,7 @@ VARIANT_FILTER_TABLE_DEF =\
 
 VARIANT_FILTER_GENE_TABLE_DEF =\
     TableDef(DATA_FOLDER,
-             "variant_filter_gene.csv", ["FILTER_CODE, GENE_SYMBOL"],
+             "variant_filter_gene.csv", ["FILTER_CODE", "GENE_SYMBOL"],
              [])
 
 VARIANT_FILTER_VARIANT_TABLE_DEF =\
@@ -171,20 +170,20 @@ class VariantEffectLabelCache(ParameterizedSingleton):
         self._lock = threading.Lock()
         self._cache = dict()
 
-    def get_data_frame(self, task_name: str):
-        if task_name not in self._cache:
+    def get_data_frame(self, task_code: str):
+        if task_code not in self._cache:
             with self._lock:
-                if task_name not in self._cache:
-                    self._cache[task_name] = pd.read_csv(
+                if task_code not in self._cache:
+                    self._cache[task_code] = pd.read_csv(
                         os.path.join(self._data_folder_root, DATA_FOLDER,
-                                     task_name,
+                                     task_code,
                                      VARIANT_EFFECT_LABEL_TABLE_DEF.file_name))
-        return self._cache[task_name]
+        return self._cache[task_code]
 
 
 class DataCache(ParameterizedSingleton):
     """
-    Caches the variant csv file in a dataframe. Implements the singleton
+    Caches a repository csv file in a dataframe. Implements the singleton
     pattern to ensure there is only one instance of the cached dataframe.
     We use an _init_once method rather than the normal __init__ method
     as required by the ParameterizedSingleton class.
@@ -209,7 +208,8 @@ class DataCache(ParameterizedSingleton):
 
 class TaskBasedDataCache(ParameterizedSingleton):
     """
-    Caches the variant csv file in a dataframe. Implements the singleton
+    Caches a repository csv file in a dataframe. Maintains a separate
+    cache for each task in a dict. Implements the singleton
     pattern to ensure there is only one instance of the cached dataframe.
     We use an _init_once method rather than the normal __init__ method
     as required by the ParameterizedSingleton class.
@@ -221,15 +221,15 @@ class TaskBasedDataCache(ParameterizedSingleton):
         self._cache = dict()
         self._lock = threading.Lock()
 
-    def get_data_frame(self, task_name: str):
-        if task_name not in self._cache:
+    def get_data_frame(self, task_code: str):
+        if task_code not in self._cache:
             with self._lock:
-                if task_name not in self._cache:
-                    self._cache[task_name] = pd.read_csv(
+                if task_code not in self._cache:
+                    self._cache[task_code] = pd.read_csv(
                         os.path.join(self._data_folder_root, DATA_FOLDER,
-                                     task_name,
+                                     task_code,
                                      self._table_def.file_name))
-        return self._cache[task_name]
+        return self._cache[task_code]
 
 
 class TaskDataCache(DataCache):
@@ -242,29 +242,6 @@ class TaskDataCache(DataCache):
 
     def _init_once(self, data_folder_root: str):
         super()._init_once(data_folder_root, VARIANT_TASK_TABLE_DEF)
-
-
-class TaskDataCache1(ParameterizedSingleton):
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
-
-    def _init_once(self, data_folder_root: str, table_def: TableDef):
-        self._data_folder_root = data_folder_root
-        self._table_def = table_def
-        self._lock = threading.Lock()
-
-    def get_data_frame(self, task_name: str) -> pd.DataFrame:
-        if self._data_frame is None:
-            with self._lock:
-                if self._data_frame is None:
-                    self._data_frame = pd.read_csv(
-                        os.path.join(self._data_folder_root,
-                                     self._table_def.full_file_name))
-        return self._data_frame
 
 
 class VariantEffectScoreCache(TaskBasedDataCache):
@@ -291,29 +268,6 @@ class VariantCache(DataCache):
         super()._init_once(data_folder_root, VARIANT_TABLE_DEF)
 
 
-class VariantCache1(ParameterizedSingleton):
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
-
-    def _init_once(self, data_folder_root: str):
-        self._data_folder_root = data_folder_root
-        self._lock = threading.Lock()
-
-    @property
-    def data_frame(self):
-        if self._data_frame is None:
-            with self._lock:
-                if self._data_frame is None:
-                    self._data_frame = pd.read_csv(
-                        os.path.join(self._data_folder_root,
-                                     VARIANT_TABLE_DEF.full_file_name))
-        return self._data_frame
-
-
 class VariantTaskCache(DataCache):
     """
     Caches the variant csv file in a dataframe. Implements the singleton
@@ -326,60 +280,25 @@ class VariantTaskCache(DataCache):
         super()._init_once(data_folder_root, VARIANT_TASK_TABLE_DEF)
 
 
-class VariantTaskCache1(ParameterizedSingleton):
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
-
-    def _init_once(self, data_folder_root: str):
-        self._data_folder_root = data_folder_root
-        self._lock = threading.Lock()
-
-    @property
-    def data_frame(self):
-        if self._data_frame is None:
-            with self._lock:
-                if self._data_frame is None:
-                    self._data_frame = pd.read_csv(
-                        os.path.join(self._data_folder_root,
-                                     VARIANT_TASK_TABLE_DEF.full_file_name))
-        return self._data_frame
-
-
 class VariantEffectSourceCache(DataCache):
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def _init_once(self, data_folder_root: str):
         super()._init_once(data_folder_root, VARIANT_EFFECT_SOURCE_TABLE_DEF)
 
 
 class VariantFilterCache(ParameterizedSingleton):
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def _init_once(self, data_folder_root: str):
         self._data_folder_root = data_folder_root
         self._lock = threading.Lock()
         self._cache = dict()
 
-    def get_data_frames(self, task_name: str) -> Dict:
-        if task_name not in self._cache:
+    def get_data_frames(self, task_code: str) -> dict:
+        if task_code not in self._cache:
             with self._lock:
-                if task_name not in self._cache:
+                if task_code not in self._cache:
                     folder = os.path.join(self._data_folder_root, DATA_FOLDER,
-                                          task_name)
+                                          task_code)
                     cache_dict = dict()
                     cache_dict["filter_df"] = pd.read_csv(
                         os.path.join(folder,
@@ -391,17 +310,11 @@ class VariantFilterCache(ParameterizedSingleton):
                         os.path.join(
                             folder,
                             VARIANT_FILTER_VARIANT_TABLE_DEF.file_name))
-                    self._cache[task_name] = cache_dict
-        return self._cache[task_name]
+                    self._cache[task_code] = cache_dict
+        return self._cache[task_code]
 
 
 class VariantEffectSourceRepository:
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def __init__(self, session_context: RepoSessionContext,
                  variant_effect_score_repo):
@@ -412,11 +325,11 @@ class VariantEffectSourceRepository:
     def get_all(self) -> pd.DataFrame:
         return self._cache.data_frame.copy(deep=True)
 
-    def get_by_task(self, task_name: str) -> pd.DataFrame:
+    def get_by_task(self, task_code: str) -> pd.DataFrame:
         score_sources = self._variant_effect_score_repo.get_all_by_task(
-            task_name)['SCORE_SOURCE'].unique()
+            task_code)['SCORE_SOURCE'].unique()
         source_df = self._cache.data_frame.copy(deep=True)
-        return source_df[source_df['CODE'] in score_sources]
+        return source_df[source_df['CODE'].isin(score_sources)]
 
     def get_by_code(self, codes: list[str]) -> pd.DataFrame:
         return filter_dataframe_by_list(
@@ -425,12 +338,6 @@ class VariantEffectSourceRepository:
 
 
 class VariantTaskRepository:
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def __init__(self, session_context: RepoSessionContext):
         self._cache = VariantTaskCache(session_context.data_folder_root)
@@ -440,22 +347,16 @@ class VariantTaskRepository:
 
 
 class VariantFilterRepository:
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def __init__(self, session_context: RepoSessionContext):
         self._cache = VariantFilterCache(session_context.data_folder_root)
 
-    def get_by_task(self, task_name: str) -> Dict:
-        return self._cache.get_data_frames(task_name)
+    def get_by_task(self, task_code: str) -> dict[str, pd.DataFrame]:
+        return self._cache.get_data_frames(task_code)
 
     def get_by_task_filter_name(
-            self, task_name: str, filter_name: str) -> VariantFilter:
-        filter_dfs = self.get_by_task(task_name)
+            self, task_code: str, filter_name: str) -> VariantFilter:
+        filter_dfs = self._cache.get_data_frames(task_code)
         filter = filter_dfs["filter_df"].query(f"NAME == '{filter_name}'")
         if len(filter) == 0:
             return None
@@ -488,12 +389,6 @@ def query_by_filter(query_df: pd.DataFrame,
 
 
 class VariantRepository:
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def __init__(self, session_context: RepoSessionContext):
         self._cache = VariantCache(session_context.data_folder_root)
@@ -505,32 +400,6 @@ class VariantRepository:
         """
         Fetches variants. The optional parameters are filter criteria used to
         limit the set of variants returned.
-
-        Parameters
-        ----------
-        gene_symbols : list, optional
-            List of gene symbols
-        include_genes : bool, optional
-            If gene_symbols is provided, indicates whether to limit variants
-            to associated with those gene_symbols to exclude variants
-            associated with the gene_symbols.
-        variant_ids : DataFrame, optional
-            List of variant ids
-        include_variant_ids : bool, optional
-            If variant_ids is provided, indicates whether to limit variants
-            to the variant_ids provided or to fetch all variants but those
-            in variant_ids
-        allele_frequency_operator : str, optional
-            If allele_frequency is provided, this is one of "=", ">",
-            "<", ">=", "<=", "!=". i.e. limit variants to those whose
-            allele_frequency is equal to, greater than, etc. the
-            allele_frequency.
-        allele_frequency : float, optional
-            Used in conjunction to allele_frequency_operator to limit variants
-            to those meeting a certain allele_frequency criteria.
-        filter_name : str, optional
-            The name of a system filter that can be used to limit the variants
-            returned.
         """
         where_clause = build_dataframe_where_clause(
             {"ALLELE_FREQUENCY": [qry.allele_frequency_operator,
@@ -551,12 +420,6 @@ class VariantRepository:
 
 
 class VariantEffectLabelRepository:
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def __init__(self, session_context: RepoSessionContext,
                  variant_repo: VariantRepository,
@@ -565,48 +428,19 @@ class VariantEffectLabelRepository:
         self._filter_repo = filter_repo
         self._variant_repo = variant_repo
 
-    def get_all_by_task(self, task_name: str) -> pd.DataFrame:
-        label_df = self._cache.get_data_frame(task_name)
-        variant_df = self._variant_repo.get(variant_ids=label_df[
-            VARIANT_PK_COLUMNS], include_variant_ids=True)
+    def get_all_by_task(self, task_code: str) -> pd.DataFrame:
+        label_df = self._cache.get_data_frame(task_code)
+        variant_df = self._variant_repo.get(
+            VEQueryCriteria(variant_ids=label_df[VARIANT_PK_COLUMNS]))
         return label_df.merge(variant_df, on=VARIANT_PK_COLUMNS,
                               how="inner")
 
-    def get(self, task_name: str,
+    def get(self, task_code: str,
             qry: VEQueryCriteria = None) -> pd.DataFrame:
         """
-        Fetches variants. The optional parameters are filter criteria used to
-        limit the set of variants returned.
-
-        Parameters
-        ----------
-        task_name : str
-            Retrieve variants associated with this task.
-        gene_symbols : list, optional
-            List of gene symbols
-        include_genes : bool, optional
-            If gene_symbols is provided, indicates whether to limit variants
-            to associated with those gene_symbols to exclude variants
-            associated with the gene_symbols.
-        variant_ids : DataFrame, optional
-            List of variant ids
-        include_variant_ids : bool, optional
-            If variant_ids is provided, indicates whether to limit variants
-            to the variant_ids provided or to fetch all variants but those
-            in variant_ids
-        allele_frequency_operator : str, optional
-            If allele_frequency is provided, this is one of "eq", "gt",
-            "lt", "ge", "le". i.e. limit variants to those whose
-            allele_frequency is equal to, greater than, etc. the
-            allele_frequency.
-        allele_frequency : float, optional
-            Used in conjunction to allele_frequency_operator to limit variants
-            to those meeting a certain allele_frequency criteria.
-        filter_name : str, optional
-            The name of a system filter that can be used to limit the variants
-            returned.
+        Fetches variant effect labels.
         """
-        label_df = self._cache.get_data_frame(task_name)
+        label_df = self._cache.get_data_frame(task_code)
         if qry is not None:
             if qry.variant_ids is not None and len(qry.variant_ids) > 0:
                 label_df = filter_dataframe_by_list(
@@ -620,7 +454,7 @@ class VariantEffectLabelRepository:
                                   on=VARIANT_PK_COLUMNS)
         if qry is not None and qry.filter_name is not None:
             filter_dfs = \
-                self._filter_repo.get_by_task_filter_name(task_name,
+                self._filter_repo.get_by_task_filter_name(task_code,
                                                           qry.filter_name)
             if filter_dfs is None:
                 raise Exception("Invalid filter name: " + qry.filter_name)
@@ -631,12 +465,6 @@ class VariantEffectLabelRepository:
 
 
 class VariantEffectScoreRepository:
-    """
-    Caches the variant csv file in a dataframe. Implements the singleton
-    pattern to ensure there is only one instance of the cached dataframe.
-    We use an _init_once method rather than the normal __init__ method
-    as required by the ParameterizedSingleton class.
-    """
 
     def __init__(self, session_context: RepoSessionContext,
                  variant_repo: VariantRepository,
@@ -645,51 +473,21 @@ class VariantEffectScoreRepository:
         self._filter_repo = filter_repo
         self._variant_repo = variant_repo
 
-    def get_all_by_task(self, task_name: str) -> pd.DataFrame:
-        label_df = self._cache.get_data_frame(task_name)
-        query_criteria = VEQueryCriteria(variant_ids=label_df[
-            VARIANT_PK_COLUMNS], include_variant_ids=True)
+    def get_all_by_task(self, task_code: str) -> pd.DataFrame:
+        score_df = self._cache.get_data_frame(task_code)
+        query_criteria = VEQueryCriteria(variant_ids=score_df[
+            VARIANT_PK_COLUMNS].drop_duplicates(),
+            include_variant_ids=True)
         variant_df = self._variant_repo.get(query_criteria)
-        return label_df.merge(variant_df, on=VARIANT_PK_COLUMNS,
+        return score_df.merge(variant_df, on=VARIANT_PK_COLUMNS,
                               how="inner")
 
-    def get(self, task_name: str,
+    def get(self, task_code: str,
             variant_effect_sources: list[str] | str = None,
             include_variant_effect_sources: bool = True,
             qry: VEQueryCriteria = None) -> pd.DataFrame:
-        """
-        Fetches variants. The optional parameters are filter criteria used to
-        limit the set of variants returned.
 
-        Parameters
-        ----------
-        task_name : str
-            Retrieve variants associated with this task.
-        gene_symbols : list, optional
-            List of gene symbols
-        include_genes : bool, optional
-            If gene_symbols is provided, indicates whether to limit variants
-            to associated with those gene_symbols to exclude variants
-            associated with the gene_symbols.
-        variant_ids : DataFrame, optional
-            List of variant ids
-        include_variant_ids : bool, optional
-            If variant_ids is provided, indicates whether to limit variants
-            to the variant_ids provided or to fetch all variants but those
-            in variant_ids
-        allele_frequency_operator : str, optional
-            If allele_frequency is provided, this is one of "eq", "gt",
-            "lt", "ge", "le". i.e. limit variants to those whose
-            allele_frequency is equal to, greater than, etc. the
-            allele_frequency.
-        allele_frequency : float, optional
-            Used in conjunction to allele_frequency_operator to limit variants
-            to those meeting a certain allele_frequency criteria.
-        filter_name : str, optional
-            The name of a system filter that can be used to limit the variants
-            returned.
-        """
-        score_df = self._cache.get_data_frame(task_name)
+        score_df = self._cache.get_data_frame(task_code)
         if (variant_effect_sources is not None and
                 len(variant_effect_sources) > 0):
             score_df = filter_dataframe_by_list(score_df,
@@ -709,7 +507,7 @@ class VariantEffectScoreRepository:
                                   on=VARIANT_PK_COLUMNS)
         if qry.filter_name is not None:
             filter_dfs = \
-                self._filter_repo.get_by_task_filter_name(task_name,
+                self._filter_repo.get_by_task_filter_name(task_code,
                                                           qry.filter_name)
             if filter_dfs is None:
                 raise Exception("Invalid filter name: " + qry.filter_name)

@@ -20,9 +20,13 @@ class VariantId:
     genome_assembly : str
         genome assembly symbol, i.e. hg38
     chromosome : str
+        chromosome
     position : int
+        position
     reference_nucleotide : str
+        reference nucleotide
     alternate_nucleotide : str
+        alternate_nucleotide
     """
 
     genome_assembly: str
@@ -46,6 +50,7 @@ class VariantEffectSource:
     source_type : str
         i.e. VEP
     description : str
+        Description
     """
 
     code: str
@@ -70,7 +75,7 @@ class VariantFilter:
         A dataframe of gene symbols associated with the filter.
         If None then there filter_variants must not be None.
     filter_variants : DataFrame
-1       A dataframe of variant id's associated with the filter.
+        A dataframe of variant id's associated with the filter.
         If None then there filter_genes must not be None.
     """
 
@@ -130,25 +135,6 @@ class VEQueryCriteria:
 
 
 @dataclass
-class VariantBenchmarkRoc:
-
-    """
-    Roc_aucs – A dataframe containing columns: variant_effect_source,
-      roc_auc, num_variants, num_positive_labels, num_negative_labels
-    Roc_curve_coordinates – A dataframe containing columns:
-     variant_effect_source, false_positive_rate, true_positive_rate, threshold
-	variants_included – A dataframe of all variants included in the benchmarking.
-      Columns are: variant_effect_source, chromosome, position,
-        reference_nucleotide, alternate_nucleotide.
-        Only populated if parameter, list_variants is True.
-    """
-
-    roc_aucs: pd.DataFrame
-    roc_curve_coordinates: pd.DataFrame
-    variants_included: pd.DataFrame
-
-
-@dataclass
 class VEAnalysisResult:
     """
     Represents the result of calling VEAnalyzer.compute_metrics.
@@ -200,3 +186,23 @@ class VEAnalysisResult:
     roc_curve_coordinates: pd.DataFrame
     pr_curve_coordinates: pd.DataFrame
     variants_included: pd.DataFrame
+
+
+@dataclass
+class TaskPkViolations:
+    dups_found: bool
+    variant_effect_label_dups: pd.DataFrame
+    variant_effect_score_dups: pd.DataFrame
+    variant_filter_dups: pd.DataFrame
+    variant_filter_gene_dups: pd.DataFrame
+    variant_filter_variant_dups: pd.DataFrame
+
+
+@dataclass
+class PkViolations:
+    dups_found: bool
+    variant_dups: pd.DataFrame
+    variant_effect_source_dups: pd.DataFrame
+    task_violations: dict[str, TaskPkViolations]
+
+
