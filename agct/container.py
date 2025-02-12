@@ -27,7 +27,7 @@ class VEBenchmarkContainer:
     a proper one. The interface, however, would remain the same.
     """
 
-    def __init__(self, app_root: str = "."):
+    def __init__(self, config_file: str = "./conf/agct.yaml"):
         """
         Parameters
         ----------
@@ -36,9 +36,9 @@ class VEBenchmarkContainer:
             Path of config file:
             <value of app_root>/config/config.yaml
         """
-        with (open(os.path.join(app_root, "config", "config.yaml"), "r") as
-              config_file):
-            self.config = Config(yaml.safe_load(config_file))
+        with (open(config_file, "r") as
+              conf_file):
+            self.config = Config(yaml.safe_load(conf_file))
         self._repo_session_context = RepoSessionContext(
             self.config.repository.root_dir, TABLE_DEFS)
         self._variant_task_repo = VariantTaskRepository(

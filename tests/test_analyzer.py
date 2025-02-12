@@ -19,7 +19,7 @@ def test_compute_metrics_col_name_map_include_ve_sources(
         sample_user_scores_col_name_map):
     user_scores, col_name_map = sample_user_scores_col_name_map
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", user_scores, col_name_map, 
+        "CANCER", user_scores, "UserVep", col_name_map, 
         ['REVEL', 'EVE'], list_variants=True)
     metrics
 
@@ -29,7 +29,7 @@ def test_compute_metrics_exclude_ve_sources(
         sample_user_scores_col_name_map):
     user_scores, col_name_map = sample_user_scores_col_name_map
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", user_scores, col_name_map, 
+        "CANCER", user_scores, "UserVep", col_name_map, 
         ['REVEL', 'EVE'], False, list_variants=True)
     metrics
 
@@ -40,7 +40,7 @@ def test_compute_metrics_query_params_genes(
         sample_user_scores):
     qry = VEQueryCriteria(['MTOR', 'PTEN'])
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, None,
+        "CANCER", sample_user_scores, "UserVep", None,
         ['REVEL', 'EVE'], False, qry, list_variants=True)
     qry = VEQueryCriteria(variant_ids=metrics.variants_included)
     variants = ve_bm_query_mgr.get_variants_by_task("CANCER", qry)
@@ -54,7 +54,7 @@ def test_compute_metrics_query_params_exclude_genes(
         sample_user_scores):
     qry = VEQueryCriteria(['MTOR', 'PTEN'], include_genes=False)
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, None, None,
+        "CANCER", sample_user_scores, "UserVep", None, None,
         False, qry, list_variants=True)
     assert metrics.num_variants_included > 0
     qry = VEQueryCriteria(variant_ids=metrics.variants_included)
@@ -69,7 +69,7 @@ def test_compute_metrics_query_params_filter(
         sample_user_scores):
     qry = VEQueryCriteria(filter_name="Oncogene")
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, None, None,
+        "CANCER", sample_user_scores, "UserVep", None, None,
         False, qry, list_variants=True)
     qry = VEQueryCriteria(variant_ids=metrics.variants_included)
     variants = ve_bm_query_mgr.get_variants_by_task("CANCER", qry)
@@ -88,7 +88,7 @@ def test_compute_metrics_query_params_variant_ids(
         sample_user_scores):
     qry = VEQueryCriteria(variant_ids=sample_user_scores[:1500])
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, None, None,
+        "CANCER", sample_user_scores, "UserVep", None, None,
         False, qry, list_variants=True)
     assert metrics.num_variants_included == 1500
 
@@ -100,7 +100,7 @@ def test_compute_metrics_query_params_exclude_variant_ids(
     qry = VEQueryCriteria(variant_ids=sample_user_scores[:1500],
                           include_variant_ids=False)
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, None, None,
+        "CANCER", sample_user_scores, "UserVep", None, None,
         False, qry, list_variants=True)
     assert metrics.num_variants_included == 500
 
@@ -113,7 +113,7 @@ def test_compute_metrics_query_params_allele_freq(
     qry = VEQueryCriteria(allele_frequency_operator=">",
                           allele_frequency=1.0e-7)
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, None, None,
+        "CANCER", sample_user_scores, "UserVep", None, None,
         False, qry, list_variants=True)
     qry1 = VEQueryCriteria(variant_ids=metrics.variants_included)
     variants = ve_bm_query_mgr.get_variants_by_task("CANCER", qry1)
@@ -134,7 +134,7 @@ def test_compute_metrics_query_params_multiple(
                           gene_symbols=['MTOR', 'PTEN'],
                           include_genes=False)
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores,
+        "CANCER", sample_user_scores, "UserVep",
         variant_effect_sources=['REVEL', 'EVE'],
         variant_query_criteria=qry, vep_min_overlap_percent=50,
         variant_vep_retention_percent=10, list_variants=True)
@@ -152,9 +152,55 @@ def test_compute_metrics_query_params_multiple2(
                           gene_symbols=['MTOR', 'PTEN'],
                           include_genes=False)
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores,
+        "CANCER", sample_user_scores, "UserVep",
         variant_effect_sources=['REVEL', 'EVE'],
         variant_query_criteria=qry, vep_min_overlap_percent=50,
+        variant_vep_retention_percent=10, list_variants=True)
+    ve_reporter.write_summary(metrics)
+
+
+def test_compute_metrics_query_params_user_vep_only(
+        ve_analyzer: VEAnalyzer,
+        ve_bm_query_mgr: VEBenchmarkQueryMgr,
+        sample_user_scores,
+        ve_reporter: VEAnalysisReporter):
+    qry = VEQueryCriteria(
+                          variant_ids=sample_user_scores[:1500],
+                          filter_name="Oncogene",
+                          gene_symbols=['MTOR'],
+                          include_genes=False)
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER", sample_user_scores, "UserVep",
+        variant_query_criteria=qry, include_variant_effect_sources=False,
+        list_variants=True)
+    ve_reporter.write_summary(metrics)
+
+
+def test_compute_metrics_query_params_sys_veps_only(
+        ve_analyzer: VEAnalyzer,
+        ve_bm_query_mgr: VEBenchmarkQueryMgr,
+        sample_user_scores,
+        ve_reporter: VEAnalysisReporter):
+    qry = VEQueryCriteria(
+                          variant_ids=sample_user_scores[:1500],
+                          filter_name="Oncogene",
+                          gene_symbols=['MTOR'],
+                          include_genes=False)
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER",
+        variant_query_criteria=qry, vep_min_overlap_percent=50,
+        variant_vep_retention_percent=10, list_variants=True)
+    ve_reporter.write_summary(metrics)
+
+
+def test_compute_metrics_sys_veps_only(
+        ve_analyzer: VEAnalyzer,
+        ve_bm_query_mgr: VEBenchmarkQueryMgr,
+        sample_user_scores,
+        ve_reporter: VEAnalysisReporter):
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER",
+        vep_min_overlap_percent=50,
         variant_vep_retention_percent=10, list_variants=True)
     ve_reporter.write_summary(metrics)
 

@@ -36,6 +36,7 @@ class VEAnalyzer:
             self,
             task_code: str,
             user_ve_scores: pd.DataFrame = None,
+            user_vep_name: str = "USER",
             column_name_map: dict = None,
             variant_effect_sources: list[str] = None,
             include_variant_effect_sources: bool = None,
@@ -50,6 +51,9 @@ class VEAnalyzer:
         if (user_ve_scores is not None and
                 len(user_ve_scores) == 0):
             user_ve_scores = None
+        if (variant_effect_sources is not None and
+                len(variant_effect_sources) == 0):
+            variant_effect_sources = None
 
         # Get the full universe of variants for query criteria. The universe
         # is limited to those for which we have labels.
@@ -66,60 +70,73 @@ class VEAnalyzer:
             user_ve_scores = user_ve_scores.merge(variant_universe_pks_df,
                                                   how="inner",
                                                   on=VARIANT_PK_COLUMNS)
-            user_ve_scores = user_ve_scores.assign(SCORE_SOURCE="USER")
+            user_ve_scores = user_ve_scores.assign(
+                SCORE_SOURCE=user_vep_name)
             variant_universe_pks_df = user_ve_scores[VARIANT_PK_COLUMNS]
 
-        # get the system vep scores based upon selection critera
-        system_ve_scores_df = self._variant_effect_score_repo.get(
-            task_code, variant_effect_sources,
-            include_variant_effect_sources,
-            variant_query_criteria)
-        
-        # First restrict the set of system vep scores to the variants
-        # in the universe. Then compute how many variants there are for
-        # each vep. Then we only keep the vep scores for veps where
-        # the variant count is above the vep_min_overlap_count
-        vep_min_overlap_count = (len(variant_universe_pks_df) *
-                                 vep_min_overlap_percent * 0.01)
-        system_ve_scores_df = filter_dataframe_by_list(
-            system_ve_scores_df, variant_universe_pks_df,
-            VARIANT_PK_COLUMNS)
-        retained_veps = []
-        system_ve_scores_count_by_vep = system_ve_scores_df.groupby(
-            "SCORE_SOURCE").size()
-        retained_veps = system_ve_scores_count_by_vep[
-            system_ve_scores_count_by_vep >= vep_min_overlap_count
-            ].index
-        system_ve_scores_df = filter_dataframe_by_list(system_ve_scores_df,
-                                                       retained_veps,
-                                                       'SCORE_SOURCE')
-
-        # Now for each variant we compute how many veps for which we have
-        # scores. We then retain only those variants where the number of
-        # veps is above variant_vep_retention_count
-        variant_vep_retention_count = (len(retained_veps) *
-                                       variant_vep_retention_percent * 0.01)
-
-        system_ve_scores_count_by_var = system_ve_scores_df.groupby(
-             VARIANT_PK_COLUMNS).size()
-        retained_variants = (system_ve_scores_count_by_var[
-            system_ve_scores_count_by_var >= variant_vep_retention_count].
-                reset_index())
-
-        # If user specified scores append them to the system ones. Then merge
-        # in the labels for all of the variants.
-        if user_ve_scores is not None:
-            analysis_ve_scores_df = pd.concat([
-                system_ve_scores_df[VARIANT_EFFECT_SCORE_COLS],
-                user_ve_scores[VARIANT_EFFECT_SCORE_COLS]])
+        if (user_ve_scores is not None and
+                not include_variant_effect_sources and
+                variant_effect_sources is None):
+            # We only do the analysis against the user scores.
+            # We don't use any system veps.
+            analysis_ve_scores_df = \
+                user_ve_scores[VARIANT_EFFECT_SCORE_COLS]
+            analysis_labels_df = self._variant_effect_label_repo.get(
+                task_code, VEQueryCriteria(
+                    variant_ids=user_ve_scores[VARIANT_PK_COLUMNS]))
         else:
-            analysis_ve_scores_df = system_ve_scores_df[
-                VARIANT_EFFECT_SCORE_COLS]
-        analysis_ve_scores_df = filter_dataframe_by_list(analysis_ve_scores_df,
-                                                         retained_variants,
-                                                         VARIANT_PK_COLUMNS)
-        analysis_labels_df = self._variant_effect_label_repo.get(
-            task_code, VEQueryCriteria(variant_ids=retained_variants))
+            # We include system veps in the analysis
+            # get the system vep scores based upon selection critera
+            system_ve_scores_df = self._variant_effect_score_repo.get(
+                task_code, variant_effect_sources,
+                include_variant_effect_sources,
+                variant_query_criteria)
+            
+            # First restrict the set of system vep scores to the variants
+            # in the universe. Then compute how many variants there are for
+            # each vep. Then we only keep the vep scores for veps where
+            # the variant count is above the vep_min_overlap_count
+            vep_min_overlap_count = (len(variant_universe_pks_df) *
+                                     vep_min_overlap_percent * 0.01)
+            system_ve_scores_df = filter_dataframe_by_list(
+                system_ve_scores_df, variant_universe_pks_df,
+                VARIANT_PK_COLUMNS)
+            retained_veps = []
+            system_ve_scores_count_by_vep = system_ve_scores_df.groupby(
+                "SCORE_SOURCE").size()
+            retained_veps = system_ve_scores_count_by_vep[
+                system_ve_scores_count_by_vep >= vep_min_overlap_count
+                ].index
+            system_ve_scores_df = filter_dataframe_by_list(
+                system_ve_scores_df, retained_veps, 'SCORE_SOURCE')
+
+            # Now for each variant we compute how many veps for which we have
+            # scores. We then retain only those variants where the number of
+            # veps is above variant_vep_retention_count
+            variant_vep_retention_count = (
+                len(retained_veps) * variant_vep_retention_percent * 0.01)
+
+            system_ve_scores_count_by_var = system_ve_scores_df.groupby(
+                VARIANT_PK_COLUMNS).size()
+            retained_variants = (system_ve_scores_count_by_var[
+                system_ve_scores_count_by_var >= variant_vep_retention_count].
+                    reset_index())
+
+            # If user specified scores append them to the system ones. Then
+            # merge in the labels for all of the variants.
+            if user_ve_scores is not None:
+                analysis_ve_scores_df = pd.concat([
+                    system_ve_scores_df[VARIANT_EFFECT_SCORE_COLS],
+                    user_ve_scores[VARIANT_EFFECT_SCORE_COLS]])
+            else:
+                analysis_ve_scores_df = system_ve_scores_df[
+                    VARIANT_EFFECT_SCORE_COLS]
+            analysis_ve_scores_df = filter_dataframe_by_list(
+                analysis_ve_scores_df,
+                retained_variants,
+                VARIANT_PK_COLUMNS)
+            analysis_labels_df = self._variant_effect_label_repo.get(
+                task_code, VEQueryCriteria(variant_ids=retained_variants))
         analysis_ve_scores_labels_df = analysis_ve_scores_df.merge(
             analysis_labels_df, how="inner", on=VARIANT_PK_COLUMNS)
         return analysis_ve_scores_labels_df
@@ -289,6 +306,7 @@ class VEAnalyzer:
             self,
             task_code: str,
             user_ve_scores: pd.DataFrame = None,
+            user_vep_name: str = "USER",
             column_name_map: dict = None,
             variant_effect_sources: list[str] = None,
             include_variant_effect_sources: bool = True,
@@ -313,6 +331,9 @@ class VEAnalyzer:
             scores. Expected to have the following columns:
             GENOME_ASSEMBLY, CHROMOSOME, POSITION,
             REFERENCE_NUCLEOTIDE, ALTERNATE_NUCLEOTIDE, RANK_SCORE
+        user_vep_name : str, optional
+            If user_ve_scores are provided, then this is the label to
+            be used for them in the analysis output.
         column_name_map : dict, optional
             If the column names in user_ve_scores are not the expected
             names, then this maps the column names to the expected names.
@@ -320,9 +341,12 @@ class VEAnalyzer:
             If specified it would restrict the analysis to the
             system supplied vep's in this list.
         include_variant_effect_sources : bool, optional
-            If variant_effect_source is specified, indicates whether to
+            If variant_effect_sources is specified, indicates whether to
             limit the analysis to the system supplied vep's specified or to
             exclude the system supplied vep's specified.
+            If variant_effect_sources is not specified a value of False
+            indicates that all system variant effect sources should
+            be excluded from the analysis.
         variant_query_criteria : VEQueryCriteria, optional
             See description of VEQueryCriteria in model package.
             Specifies criteria that would limit the set of variants
@@ -363,6 +387,7 @@ class VEAnalyzer:
         scores_and_labels_df = self.get_analysis_scores_and_labels(
             task_code,
             user_ve_scores,
+            user_vep_name,
             column_name_map,
             variant_effect_sources,
             include_variant_effect_sources,
@@ -382,7 +407,8 @@ class VEAnalyzer:
             len(user_ve_scores)
         return VEAnalysisResult(
             num_variants,
-            num_user_variants, general_metrics_df, roc_df,
+            num_user_variants, user_vep_name,
+            general_metrics_df, roc_df,
             pr_df, mwu_df, roc_curve_coords_df,
             pr_curve_coords_df, included_variants_df)
         

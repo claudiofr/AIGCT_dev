@@ -10,7 +10,8 @@ def test_export(
         sample_user_scores,
         ve_analysis_exporter: VEAnalysisExporter):
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, vep_min_overlap_percent=50,
+        "CANCER", sample_user_scores, "UserVep",
+        vep_min_overlap_percent=50,
         variant_vep_retention_percent=1, list_variants=True)
     ve_analysis_exporter.export_results(metrics, "./demo/output")
     pass

@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -30,3 +31,17 @@ def barchart(df: pd.DataFrame, x: str, y: str, x_label: str = '',
     if filename is not None:
         plt.savefig(filename, dpi=file_dpi, bbox_inches=bbox_inches)
         plt.savefig(filename.replace('.png', '.svg'), bbox_inches=bbox_inches)
+
+
+def create_feature_palette(values: list) -> dict:
+    if len(values) > 255:
+        colors = sns.color_palette('husl', len(values))
+    else:
+        # Get a list of all available colors in Seaborn's color palette
+        all_colors = sns.color_palette("husl", 256)
+
+        # Randomly select colors from the list
+        random_colors = np.random.choice(range(len(all_colors)),
+                                         len(values), replace=False)
+        colors = [all_colors[i] for i in random_colors]
+    return dict(zip(values, colors))

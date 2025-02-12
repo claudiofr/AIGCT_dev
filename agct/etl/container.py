@@ -17,10 +17,10 @@ import os
 
 class VEETLContainer:
 
-    def __init__(self, app_root: str = "."):
-        with (open(os.path.join(app_root, "config", "config.yaml"), "r") as
-              config_file):
-            self.config = Config(yaml.safe_load(config_file))
+    def __init__(self, config_file: str = "./conf/config.yaml"):
+        with (open(config_file, "r") as
+              conf_file):
+            self.config = Config(yaml.safe_load(conf_file))
         self._repo_session_context = RepoSessionContext(
             self.config.repository.root_dir, TABLE_DEFS)
         self._loader = RepositoryLoader(self.config,

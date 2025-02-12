@@ -15,7 +15,32 @@ def test_plot_results(
         sample_user_scores,
         ve_plotter: VEAnalysisPlotter):
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, vep_min_overlap_percent=50,
+        "CANCER", sample_user_scores, "UserVep",
+        vep_min_overlap_percent=50,
+        variant_vep_retention_percent=1, list_variants=True)
+    ve_plotter.plot_results(metrics)
+    pass
+
+
+def test_plot_results_user_vep_only(
+        ve_analyzer: VEAnalyzer,
+        sample_user_scores,
+        ve_plotter: VEAnalysisPlotter):
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER", sample_user_scores, "UserVep",
+        include_variant_effect_sources=False,
+        list_variants=True)
+    ve_plotter.plot_results(metrics)
+    pass
+
+
+def test_plot_results_system_veps_only(
+        ve_analyzer: VEAnalyzer,
+        sample_user_scores,
+        ve_plotter: VEAnalysisPlotter):
+    metrics = ve_analyzer.compute_metrics(
+        "CANCER",
+        vep_min_overlap_percent=50,
         variant_vep_retention_percent=1, list_variants=True)
     ve_plotter.plot_results(metrics)
     pass
@@ -26,7 +51,8 @@ def test_plot_results_file(
         sample_user_scores,
         ve_plotter: VEAnalysisPlotter):
     metrics = ve_analyzer.compute_metrics(
-        "CANCER", sample_user_scores, vep_min_overlap_percent=50,
+        "CANCER", sample_user_scores, "UserVep",
+        vep_min_overlap_percent=50,
         variant_vep_retention_percent=1, list_variants=True)
     ve_plotter.plot_results(metrics, dir="./demo/output")
     pass

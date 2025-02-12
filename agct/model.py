@@ -146,13 +146,13 @@ class VEAnalysisResult:
         across all veps.
     num_user_variants : int
         The number of user supplied variants included in the analysis
+    user_vep_name : str
+        Name of user vep
     general_metrics : DataFrame
         Has the following columns:
         SCORE_SOURCE - Short unique vep identifier
         NUM_VARIANTS, NUM_POSITIVE_LABELS, NUM_NEGATIVE_LABELS,
         SOURCE_NAME - Name of vep
-        By convention the SOURCE_CODE and SOURCE_NAME are USER for the
-        user supplied vep scores.
     roc_metrics : DataFrame, optional
         Roc metrics with columns: SCORE_SOURCE,
         ROC_AUC, EXCEPTION, SOURCE_NAME
@@ -179,6 +179,7 @@ class VEAnalysisResult:
 
     num_variants_included: int
     num_user_variants: int
+    user_vep_name: str
     general_metrics: pd.DataFrame
     roc_metrics: pd.DataFrame
     pr_metrics: pd.DataFrame

@@ -2,17 +2,18 @@
 
 log:
   # Log file directory
-  dir: ~/gitrepo/agct_dev/demo/log
+  dir: ./log
 
 # Directory to store output files generated from a benchmark
 # analysis run. For example, the VEAnalysisReporter,
 # VEAnalysisExporter, VEAnalysisPlotter write files there.
-output_dir: ~/gitrepo/agct_dev/demo/output
+output_dir: ./output
 
 repository:
   # Root directory for the repository data .csv files. The
   # repository "data" directory is a subdirectory off of this directory.
-  root_dir: ~/gitrepo/agct_dev
+  root_dir: .
+  source_url: https://raw.githubusercontent.com/claudiofr/AGCT_dev/refs/heads/feature-phase2/junk.lis?token=GHSAT0AAAAAAC53PIT46Q2JK2RMOWTT5HOOZ5M7WZA
 
 plot:
   line_width: 2

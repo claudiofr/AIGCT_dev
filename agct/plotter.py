@@ -14,7 +14,7 @@ from .file_util import (
     unique_file_name,
     create_folder
 )
-from .plot_util import barchart
+from .plot_util import (barchart, create_feature_palette)
 
 
 class VEAnalysisPlotter:
@@ -25,12 +25,12 @@ class VEAnalysisPlotter:
         self._roc_pr_config = config.roc_pr_line
         self._mwu_config = config.mwu_bar
 
-    def _plot_roc_curves(self, aucs: pd.DataFrame,
+    def _plot_roc_curves(self, aucs: pd.DataFrame, user_vep_name: str,
                          curve_coords: pd.DataFrame,
                          batch_no: int, num_batches: int,
                          file_name: str = None):
-        title = self._roc_pr_config.roc_title + (f" ({batch_no} of {num_batches})" if
-                                   num_batches > 1 else "")
+        title = self._roc_pr_config.roc_title + (
+            f" ({batch_no+1} of {num_batches})" if num_batches > 1 else "")
         plt.figure(figsize=(10, 8))
         for i, ve_auc in aucs.iterrows():
             if pd.isna(ve_auc['ROC_AUC']):
@@ -38,7 +38,7 @@ class VEAnalysisPlotter:
             ve_curve_coords = curve_coords[curve_coords['SCORE_SOURCE'] ==
                                            ve_auc['SCORE_SOURCE']].sort_values(
                 'THRESHOLD', ascending=False)
-            if ve_auc['SCORE_SOURCE'] == 'USER':
+            if ve_auc['SCORE_SOURCE'] == user_vep_name:
                 line_color = self._config.user_ves_color
             else:
                 line_color = self._config.sys_ves_colors[i]
@@ -67,18 +67,18 @@ class VEAnalysisPlotter:
                         bbox_inches=self._config.bbox_inches)
         plt.show()
 
-    def _plot_pr_curves(self, aucs: pd.DataFrame,
+    def _plot_pr_curves(self, aucs: pd.DataFrame, user_vep_name: str,
                         curve_coords: pd.DataFrame,
                         batch_no: int, num_batches: int,
                         file_name: str = None):
         title = self._roc_pr_config.pr_title + \
-            (f" ({batch_no} of {num_batches})" if num_batches > 1 else "")
+            (f" ({batch_no+1} of {num_batches})" if num_batches > 1 else "")
         plt.figure(figsize=(10, 8))
         for i, ve_auc in aucs.iterrows():
             ve_curve_coords = curve_coords[curve_coords['SCORE_SOURCE'] ==
                                            ve_auc['SCORE_SOURCE']].sort_values(
                 'THRESHOLD', ascending=False)
-            if ve_auc['SCORE_SOURCE'] == 'USER':
+            if ve_auc['SCORE_SOURCE'] == user_vep_name:
                 line_color = self._config.user_ves_color
             else:
                 line_color = self._config.sys_ves_colors[i]
@@ -163,11 +163,12 @@ class VEAnalysisPlotter:
 
     def _plot_mwu_bar(self, mwus: pd.DataFrame,
                       batch_no: int, num_batches: int,
-                      file_name: str = None):
+                      file_name: str = None, palette=None):
         title = self._mwu_config.title + \
-            (f" ({batch_no} of {num_batches})" if num_batches > 1 else "")
+            (f" ({batch_no+1} of {num_batches})" if num_batches > 1 else "")
         config = self._mwu_config
         barchart(mwus, 'SOURCE_NAME', 'NEG_LOG10_MWU_PVAL',
+                 palette=palette,
                  y_label='Mann-Whitney U log10(p value)',
                  filename=file_name, title=title,
                  title_fontsize=config.title_font_size,
@@ -194,7 +195,8 @@ class VEAnalysisPlotter:
         for batch_no, batch in enumerate(plot_batches):
             batch_file_name = None if pr_curves_file_name is None else \
                 pr_curves_file_name + str(batch_no) + ".png"
-            self._plot_pr_curves(batch, results.pr_curve_coordinates,
+            self._plot_pr_curves(batch, results.user_vep_name,
+                                 results.pr_curve_coordinates,
                                  batch_no, num_batches, batch_file_name)
         pr_table_file_name = None if dir is None else os.path.join(
             dir, "pr_table" + ".html")
@@ -215,7 +217,8 @@ class VEAnalysisPlotter:
         for batch_no, batch in enumerate(roc_metric_batches):
             batch_file_name = None if roc_curves_file_name is None else \
                 roc_curves_file_name + str(batch_no) + ".png"
-            self._plot_roc_curves(batch, results.roc_curve_coordinates,
+            self._plot_roc_curves(batch, results.user_vep_name,
+                                  results.roc_curve_coordinates,
                                   batch_no, num_batches, batch_file_name)
         roc_table_file_name = None if dir is None else os.path.join(
             dir, "roc_table" + ".html")
@@ -225,6 +228,7 @@ class VEAnalysisPlotter:
                          dir: str = None):
         num_bars_per_plot = self._mwu_config.num_bars_per_plot
         batches = []
+        palette = create_feature_palette(results.mwu_metrics['SOURCE_NAME'])
         metrics = results.mwu_metrics.query('EXCEPTION.isna()')
         metrics = metrics.sort_values('NEG_LOG10_MWU_PVAL',
                                       ascending=False)
@@ -237,7 +241,8 @@ class VEAnalysisPlotter:
         for batch_no, batch in enumerate(batches):
             batch_file_name = None if mwu_bar_file_name is None else \
                 mwu_bar_file_name + str(batch_no) + ".png"
-            self._plot_mwu_bar(batch, batch_no, num_batches, batch_file_name)
+            self._plot_mwu_bar(batch, batch_no, num_batches, batch_file_name,
+                               palette)
         mwu_table_file_name = None if dir is None else os.path.join(
             dir, "mwu_table" + ".html")
         self._display_mwu_table(results, mwu_table_file_name)

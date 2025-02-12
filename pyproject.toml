@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agct"
+version = "0.1.0.dev2"
+authors = [
+  { name="Claudio Fratarcangeli", email="claudiofr@yahoo.com" },
+]
+description = "Performance evaluation tool for AI/ML variant effect predictors"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "docs",
+  "data",
+  "TGCA.V1",
+  "temp",
+  "venv_agct"
+]
+[project.urls]
+Homepage = "https://github.com/claudiofr/AGCT_dev"
+Issues = "https://github.com/claudiofr/AGCT_dev/issues"
