@@ -1,11 +1,11 @@
 import context  # noqa: F401
-from agct.analyzer import VEAnalyzer
-from agct.model import VEQueryCriteria
-from agct.query import VEBenchmarkQueryMgr
-from agct.reporter import VEAnalysisReporter
-from agct.pd_util import filter_dataframe_by_list
+from aigct.analyzer import VEAnalyzer
+from aigct.model import VEQueryCriteria
+from aigct.query import VEBenchmarkQueryMgr
+from aigct.reporter import VEAnalysisReporter
+from aigct.pd_util import filter_dataframe_by_list
 
-# from agct.model import VariantId  # noqa: F401
+# from aigct.model import VariantId  # noqa: F401
 
 
 def test_compute_metrics_basic(ve_analyzer,

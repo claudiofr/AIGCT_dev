@@ -1,8 +1,8 @@
 import context  # noqa: F401
-from agct.analyzer import VEAnalyzer
-from agct.exporter import VEAnalysisExporter
+from aigct.analyzer import VEAnalyzer
+from aigct.exporter import VEAnalysisExporter
 
-# from agct.model import VariantId  # noqa: F401
+# from aigct.model import VariantId  # noqa: F401
 
 
 def test_export(

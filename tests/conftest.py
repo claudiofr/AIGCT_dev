@@ -1,8 +1,8 @@
 import pytest
 import random
 import context  # noqa: F401
-from agct.container import VEBenchmarkContainer
-from agct.repository import (
+from aigct.container import VEBenchmarkContainer
+from aigct.repository import (
     VARIANT_PK_COLUMNS
 )
 

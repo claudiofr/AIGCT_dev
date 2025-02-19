@@ -1,7 +1,5 @@
 API Reference
 =============
 
-.. toctree::
-   :maxdepth: 4
-
-   agct
+.. include:: autoapi/aigct/index
+   

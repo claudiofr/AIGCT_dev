@@ -1,13 +1,13 @@
 import context  # noqa: F401
-from agct.analyzer import VEAnalyzer
-from agct.model import VEQueryCriteria
-from agct.query import VEBenchmarkQueryMgr
-from agct.plotter import VEAnalysisPlotter
-from agct.repository import (
+from aigct.analyzer import VEAnalyzer
+from aigct.model import VEQueryCriteria
+from aigct.query import VEBenchmarkQueryMgr
+from aigct.plotter import VEAnalysisPlotter
+from aigct.repository import (
     VARIANT_PK_COLUMNS
 )
 
-# from agct.model import VariantId  # noqa: F401
+# from aigct.model import VariantId  # noqa: F401
 
 
 def test_plot_results(

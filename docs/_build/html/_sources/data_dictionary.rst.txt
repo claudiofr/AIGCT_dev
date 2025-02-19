@@ -2,7 +2,7 @@ Data Dictionary
 ===============
 
 We describe the logical data model of our database using standard relational 
-database technology terminology such as table, column, and primary key.
+database terminology such as table, column, and primary key.
 The primary key is the collection of columns in a table that uniquely
 identify a row in that table. Columns tagged with a (PK) symbol are part
 of the primary key of the table.

@@ -1,6 +1,6 @@
 import context  # noqa: F401
-from agct.model import VEQueryCriteria
-from agct.query import VEBenchmarkQueryMgr
+from aigct.model import VEQueryCriteria
+from aigct.query import VEBenchmarkQueryMgr
 
 
 def test_query_criteria(ve_bm_query_mgr: VEBenchmarkQueryMgr,

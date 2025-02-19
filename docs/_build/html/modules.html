@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Reference &mdash; AGCT 0.1.0 documentation</title>
+  <title>API Reference &mdash; AIGCT 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -18,9 +19,7 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="agct package" href="agct.html" />
-    <link rel="prev" title="Installation" href="install.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +31,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            AGCT
+            AIGCT
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -43,13 +42,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="agct.html">agct package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_dictionary.html">Data Dictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 </ul>
 
@@ -59,7 +57,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">AGCT</a>
+          <a href="index.html">AIGCT</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -79,261 +77,12 @@
              
   <section id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="agct.html">agct package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.etl.html">agct.etl package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.etl.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.etl.html#module-agct.etl.container">agct.etl.container module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.etl.html#module-agct.etl.repo_loader">agct.etl.repo_loader module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.etl.html#module-agct.etl">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.analyzer">agct.analyzer module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.analyzer.VEAnalyzer"><code class="docutils literal notranslate"><span class="pre">VEAnalyzer</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.analyzer.VEAnalyzer.compute_metrics"><code class="docutils literal notranslate"><span class="pre">VEAnalyzer.compute_metrics()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.analyzer.VEAnalyzer.get_analysis_scores_and_labels"><code class="docutils literal notranslate"><span class="pre">VEAnalyzer.get_analysis_scores_and_labels()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.container">agct.container module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.container.VEBenchmarkContainer"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkContainer</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.container.VEBenchmarkContainer.analyzer"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkContainer.analyzer</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.container.VEBenchmarkContainer.data_validator"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkContainer.data_validator</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.container.VEBenchmarkContainer.exporter"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkContainer.exporter</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.container.VEBenchmarkContainer.plotter"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkContainer.plotter</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.container.VEBenchmarkContainer.query_mgr"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkContainer.query_mgr</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.container.VEBenchmarkContainer.reporter"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkContainer.reporter</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.date_util">agct.date_util module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.date_util.now_str_basic_format"><code class="docutils literal notranslate"><span class="pre">now_str_basic_format()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.date_util.now_str_compact"><code class="docutils literal notranslate"><span class="pre">now_str_compact()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.exporter">agct.exporter module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.exporter.VEAnalysisExporter"><code class="docutils literal notranslate"><span class="pre">VEAnalysisExporter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.exporter.VEAnalysisExporter.export_results"><code class="docutils literal notranslate"><span class="pre">VEAnalysisExporter.export_results()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.file_util">agct.file_util module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.file_util.create_folder"><code class="docutils literal notranslate"><span class="pre">create_folder()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.file_util.new_line"><code class="docutils literal notranslate"><span class="pre">new_line()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.file_util.unique_file_name"><code class="docutils literal notranslate"><span class="pre">unique_file_name()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.model">agct.model module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.model.PkViolations"><code class="docutils literal notranslate"><span class="pre">PkViolations</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.PkViolations.dups_found"><code class="docutils literal notranslate"><span class="pre">PkViolations.dups_found</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.PkViolations.task_violations"><code class="docutils literal notranslate"><span class="pre">PkViolations.task_violations</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.PkViolations.variant_dups"><code class="docutils literal notranslate"><span class="pre">PkViolations.variant_dups</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.PkViolations.variant_effect_source_dups"><code class="docutils literal notranslate"><span class="pre">PkViolations.variant_effect_source_dups</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.model.TaskPkViolations"><code class="docutils literal notranslate"><span class="pre">TaskPkViolations</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.TaskPkViolations.dups_found"><code class="docutils literal notranslate"><span class="pre">TaskPkViolations.dups_found</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.TaskPkViolations.variant_effect_label_dups"><code class="docutils literal notranslate"><span class="pre">TaskPkViolations.variant_effect_label_dups</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.TaskPkViolations.variant_effect_score_dups"><code class="docutils literal notranslate"><span class="pre">TaskPkViolations.variant_effect_score_dups</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.TaskPkViolations.variant_filter_dups"><code class="docutils literal notranslate"><span class="pre">TaskPkViolations.variant_filter_dups</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.TaskPkViolations.variant_filter_gene_dups"><code class="docutils literal notranslate"><span class="pre">TaskPkViolations.variant_filter_gene_dups</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.TaskPkViolations.variant_filter_variant_dups"><code class="docutils literal notranslate"><span class="pre">TaskPkViolations.variant_filter_variant_dups</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.general_metrics"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.general_metrics</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.mwu_metrics"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.mwu_metrics</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.num_user_variants"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.num_user_variants</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.num_variants_included"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.num_variants_included</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.pr_curve_coordinates"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.pr_curve_coordinates</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.pr_metrics"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.pr_metrics</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.roc_curve_coordinates"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.roc_curve_coordinates</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.roc_metrics"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.roc_metrics</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEAnalysisResult.variants_included"><code class="docutils literal notranslate"><span class="pre">VEAnalysisResult.variants_included</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.allele_frequency"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.allele_frequency</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.allele_frequency_operator"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.allele_frequency_operator</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.column_name_map"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.column_name_map</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.filter_name"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.filter_name</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.gene_symbols"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.gene_symbols</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.include_genes"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.include_genes</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.include_variant_ids"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.include_variant_ids</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VEQueryCriteria.variant_ids"><code class="docutils literal notranslate"><span class="pre">VEQueryCriteria.variant_ids</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.model.VariantEffectSource"><code class="docutils literal notranslate"><span class="pre">VariantEffectSource</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantEffectSource.code"><code class="docutils literal notranslate"><span class="pre">VariantEffectSource.code</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantEffectSource.description"><code class="docutils literal notranslate"><span class="pre">VariantEffectSource.description</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantEffectSource.name"><code class="docutils literal notranslate"><span class="pre">VariantEffectSource.name</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantEffectSource.source_type"><code class="docutils literal notranslate"><span class="pre">VariantEffectSource.source_type</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.model.VariantFilter"><code class="docutils literal notranslate"><span class="pre">VariantFilter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantFilter.filter"><code class="docutils literal notranslate"><span class="pre">VariantFilter.filter</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantFilter.filter_genes"><code class="docutils literal notranslate"><span class="pre">VariantFilter.filter_genes</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantFilter.filter_variants"><code class="docutils literal notranslate"><span class="pre">VariantFilter.filter_variants</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.model.VariantId"><code class="docutils literal notranslate"><span class="pre">VariantId</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantId.alternate_nucleotide"><code class="docutils literal notranslate"><span class="pre">VariantId.alternate_nucleotide</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantId.chromosome"><code class="docutils literal notranslate"><span class="pre">VariantId.chromosome</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantId.genome_assembly"><code class="docutils literal notranslate"><span class="pre">VariantId.genome_assembly</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantId.position"><code class="docutils literal notranslate"><span class="pre">VariantId.position</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.model.VariantId.reference_nucleotide"><code class="docutils literal notranslate"><span class="pre">VariantId.reference_nucleotide</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.pd_util">agct.pd_util module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.pd_util.build_dataframe_where_clause"><code class="docutils literal notranslate"><span class="pre">build_dataframe_where_clause()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.pd_util.filter_dataframe_by_list"><code class="docutils literal notranslate"><span class="pre">filter_dataframe_by_list()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.plot_util">agct.plot_util module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.plot_util.barchart"><code class="docutils literal notranslate"><span class="pre">barchart()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.plotter">agct.plotter module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.plotter.VEAnalysisPlotter"><code class="docutils literal notranslate"><span class="pre">VEAnalysisPlotter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.plotter.VEAnalysisPlotter.plot_mwu_results"><code class="docutils literal notranslate"><span class="pre">VEAnalysisPlotter.plot_mwu_results()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.plotter.VEAnalysisPlotter.plot_pr_results"><code class="docutils literal notranslate"><span class="pre">VEAnalysisPlotter.plot_pr_results()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.plotter.VEAnalysisPlotter.plot_results"><code class="docutils literal notranslate"><span class="pre">VEAnalysisPlotter.plot_results()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.plotter.VEAnalysisPlotter.plot_roc_results"><code class="docutils literal notranslate"><span class="pre">VEAnalysisPlotter.plot_roc_results()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.query">agct.query module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_all_variant_filters"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_all_variant_filters()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_all_variants"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_all_variants()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_tasks"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_tasks()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_variant_distribution"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_variant_distribution()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_variant_effect_scores"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_variant_effect_scores()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_variant_effect_source_stats"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_variant_effect_source_stats()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_variant_effect_sources"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_variant_effect_sources()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_variant_filter"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_variant_filter()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_variants"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_variants()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.query.VEBenchmarkQueryMgr.get_variants_by_task"><code class="docutils literal notranslate"><span class="pre">VEBenchmarkQueryMgr.get_variants_by_task()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.query.cleanup_variant_query_params"><code class="docutils literal notranslate"><span class="pre">cleanup_variant_query_params()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.repo_qc">agct.repo_qc module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repo_qc.VEDataValidator"><code class="docutils literal notranslate"><span class="pre">VEDataValidator</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repo_qc.VEDataValidator.validate_pks"><code class="docutils literal notranslate"><span class="pre">VEDataValidator.validate_pks()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.reporter">agct.reporter module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.reporter.VEAnalysisReporter"><code class="docutils literal notranslate"><span class="pre">VEAnalysisReporter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.reporter.VEAnalysisReporter.write_summary"><code class="docutils literal notranslate"><span class="pre">VEAnalysisReporter.write_summary()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.repository">agct.repository module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.DataCache"><code class="docutils literal notranslate"><span class="pre">DataCache</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.DataCache.data_frame"><code class="docutils literal notranslate"><span class="pre">DataCache.data_frame</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.RepoSessionContext"><code class="docutils literal notranslate"><span class="pre">RepoSessionContext</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.RepoSessionContext.data_folder_root"><code class="docutils literal notranslate"><span class="pre">RepoSessionContext.data_folder_root</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.RepoSessionContext.table_def"><code class="docutils literal notranslate"><span class="pre">RepoSessionContext.table_def()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.RepoSessionContext.table_file"><code class="docutils literal notranslate"><span class="pre">RepoSessionContext.table_file()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.TableDef"><code class="docutils literal notranslate"><span class="pre">TableDef</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.TableDef.columns"><code class="docutils literal notranslate"><span class="pre">TableDef.columns</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.TableDef.file_name"><code class="docutils literal notranslate"><span class="pre">TableDef.file_name</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.TableDef.folder"><code class="docutils literal notranslate"><span class="pre">TableDef.folder</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.TableDef.full_file_name"><code class="docutils literal notranslate"><span class="pre">TableDef.full_file_name</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.TableDef.non_pk_columns"><code class="docutils literal notranslate"><span class="pre">TableDef.non_pk_columns</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.TableDef.pk_columns"><code class="docutils literal notranslate"><span class="pre">TableDef.pk_columns</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.TaskBasedDataCache"><code class="docutils literal notranslate"><span class="pre">TaskBasedDataCache</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.TaskBasedDataCache.get_data_frame"><code class="docutils literal notranslate"><span class="pre">TaskBasedDataCache.get_data_frame()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.TaskDataCache"><code class="docutils literal notranslate"><span class="pre">TaskDataCache</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantCache"><code class="docutils literal notranslate"><span class="pre">VariantCache</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantEffectLabelCache"><code class="docutils literal notranslate"><span class="pre">VariantEffectLabelCache</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectLabelCache.get_data_frame"><code class="docutils literal notranslate"><span class="pre">VariantEffectLabelCache.get_data_frame()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantEffectLabelRepository"><code class="docutils literal notranslate"><span class="pre">VariantEffectLabelRepository</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectLabelRepository.get"><code class="docutils literal notranslate"><span class="pre">VariantEffectLabelRepository.get()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectLabelRepository.get_all_by_task"><code class="docutils literal notranslate"><span class="pre">VariantEffectLabelRepository.get_all_by_task()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantEffectScoreCache"><code class="docutils literal notranslate"><span class="pre">VariantEffectScoreCache</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantEffectScoreRepository"><code class="docutils literal notranslate"><span class="pre">VariantEffectScoreRepository</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectScoreRepository.get"><code class="docutils literal notranslate"><span class="pre">VariantEffectScoreRepository.get()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectScoreRepository.get_all_by_task"><code class="docutils literal notranslate"><span class="pre">VariantEffectScoreRepository.get_all_by_task()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantEffectSourceCache"><code class="docutils literal notranslate"><span class="pre">VariantEffectSourceCache</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantEffectSourceRepository"><code class="docutils literal notranslate"><span class="pre">VariantEffectSourceRepository</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectSourceRepository.get_all"><code class="docutils literal notranslate"><span class="pre">VariantEffectSourceRepository.get_all()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectSourceRepository.get_by_code"><code class="docutils literal notranslate"><span class="pre">VariantEffectSourceRepository.get_by_code()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantEffectSourceRepository.get_by_task"><code class="docutils literal notranslate"><span class="pre">VariantEffectSourceRepository.get_by_task()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantFilterCache"><code class="docutils literal notranslate"><span class="pre">VariantFilterCache</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantFilterCache.get_data_frames"><code class="docutils literal notranslate"><span class="pre">VariantFilterCache.get_data_frames()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantFilterRepository"><code class="docutils literal notranslate"><span class="pre">VariantFilterRepository</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantFilterRepository.get_by_task"><code class="docutils literal notranslate"><span class="pre">VariantFilterRepository.get_by_task()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantFilterRepository.get_by_task_filter_name"><code class="docutils literal notranslate"><span class="pre">VariantFilterRepository.get_by_task_filter_name()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantRepository"><code class="docutils literal notranslate"><span class="pre">VariantRepository</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantRepository.get"><code class="docutils literal notranslate"><span class="pre">VariantRepository.get()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantRepository.get_all"><code class="docutils literal notranslate"><span class="pre">VariantRepository.get_all()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantTaskCache"><code class="docutils literal notranslate"><span class="pre">VariantTaskCache</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.VariantTaskRepository"><code class="docutils literal notranslate"><span class="pre">VariantTaskRepository</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="agct.html#agct.repository.VariantTaskRepository.get_all"><code class="docutils literal notranslate"><span class="pre">VariantTaskRepository.get_all()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.repository.query_by_filter"><code class="docutils literal notranslate"><span class="pre">query_by_filter()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct.util">agct.util module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.util.Config"><code class="docutils literal notranslate"><span class="pre">Config</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.util.ParameterizedSingleton"><code class="docutils literal notranslate"><span class="pre">ParameterizedSingleton</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="agct.html#agct.util.str_or_list_to_list"><code class="docutils literal notranslate"><span class="pre">str_or_list_to_list()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="agct.html#module-agct">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="agct.html" class="btn btn-neutral float-right" title="agct package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

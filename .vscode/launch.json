@@ -29,7 +29,10 @@
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "justMyCode": true
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
         }
     ]
 }

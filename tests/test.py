@@ -1,6 +1,6 @@
 import context  # noqa: F401
 
-from agct.model import VariantId  # noqa: F401
+from aigct.model import VariantId  # noqa: F401
 from dataclasses import dataclass, field
 import os
 import pandas as pd
@@ -136,7 +136,7 @@ dic = [{"a":1,"b":2},{"a":5,"b":6}]
 df3= pd.DataFrame([{"a":1,"b":2},{"a":5,"b":6}],columns=["A","B"])
 pass
 
-from agct.repository import (
+from aigct.repository import (
     VARIANT_PK_COLUMNS
 )
 v1 = pd.read_csv("data/variant.csv")

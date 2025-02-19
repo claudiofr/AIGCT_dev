@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; AGCT 0.1.0 documentation</title>
+  <title>Installation &mdash; AIGCT 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -19,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Reference" href="modules.html" />
+    <link rel="next" title="User Guides" href="user_guide.html" />
     <link rel="prev" title="Introduction" href="intro.html" /> 
 </head>
 
@@ -32,7 +33,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            AGCT
+            AIGCT
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -46,7 +47,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_dictionary.html">Data Dictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 </ul>
 
@@ -56,7 +59,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">AGCT</a>
+          <a href="index.html">AIGCT</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -76,10 +79,22 @@
              
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<p>At the command line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">agct</span>
+<p>Install python package:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">aigct</span>
 </pre></div>
 </div>
+<p>Initialize the application:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>init_app –confdir &lt;config&gt; --logdir &lt;log&gt; --outdir &lt;output&gt; --dbdir &lt;dbdir&gt;
+</pre></div>
+</div>
+<p>Where &lt;config&gt;, &lt;log&gt;, &lt;output&gt;, &lt;dbdir&gt; are directories where to store
+config file, log files, output files containing the results of a benchmarking
+analysis, and database files, respectively.</p>
+<p>Download and install the database files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">install_db</span> <span class="o">--</span><span class="n">confdir</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>You should see .csv files in the &lt;dbdir&gt; directory.</p>
 </section>
 
 
@@ -87,7 +102,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="user_guide.html" class="btn btn-neutral float-right" title="User Guides" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

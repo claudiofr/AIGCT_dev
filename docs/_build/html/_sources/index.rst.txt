@@ -1,15 +1,9 @@
-.. AGCT documentation master file, created by
-   sphinx-quickstart on Fri Feb  7 11:02:53 2025.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+AIGCT documentation
+===================
 
-AGCT documentation
-==================
-
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+Welcome to the AI Genomics CollecTive (AIGCT) page, a platform for systematically 
+evaluating ML/AI models of variant effects across the spectrum of 
+genomics-based precision medicine.
 
 .. toctree::
    :maxdepth: 2
@@ -17,6 +11,7 @@ documentation for details.
 
    intro
    install
+   user_guide
    data_dictionary
-   modules
+   autoapi/index
    support
