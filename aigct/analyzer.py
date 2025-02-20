@@ -330,7 +330,10 @@ class VEAnalyzer:
             An optional dataframe of user variant effect prediction
             scores. Expected to have the following columns:
             GENOME_ASSEMBLY, CHROMOSOME, POSITION,
-            REFERENCE_NUCLEOTIDE, ALTERNATE_NUCLEOTIDE, RANK_SCORE
+            REFERENCE_NUCLEOTIDE, ALTERNATE_NUCLEOTIDE, RANK_SCORE.
+            The GENOME_ASSEMBLY must be hg38 in current release.
+            RANK_SCORE is a numeric prediction score. It does not have
+            to be standardized or normalized.
         user_vep_name : str, optional
             If user_ve_scores are provided, then this is the label to
             be used for them in the analysis output.
